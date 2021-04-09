@@ -13,8 +13,7 @@ Vue.prototype.$http = api;
 api.defaults.timeout = 10000;
 api.interceptors.request.use(
   config => {
-    // const token = localStorage.getItem("access_token");
-    const token = 'token'
+    const token = localStorage.getItem("access_token");
     if (token) {
       config.headers.common["Authorization"] = token;
     }
@@ -32,8 +31,8 @@ api.interceptors.response.use(
       return Promise.reject(response);
     }
   },
-error => {
-  console.log(error  )
+  error => {
+    console.log(error  )
     if (error.response.status) {
       switch (error.response.status) {
         case 400:
@@ -61,7 +60,7 @@ error => {
                 redirect: router.currentRoute.fullPath
               }
             });
-          }, 1000);
+          }, 5000);
       }
       return Promise.reject(error.response);
     }
@@ -69,8 +68,7 @@ error => {
 );
 
 router.beforeEach((to, from, next) => {
-  // let token = localStorage.getItem('token')
-  let token = 'token'
+  let token = localStorage.getItem('token')
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!token) {
       next({ name: 'Login' })
