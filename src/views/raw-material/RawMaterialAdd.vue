@@ -4,7 +4,7 @@
     <v-form ref="form" lazy-validation v-model="valid">
       <v-row>
         <v-col cols="12" sm="6" md="4">
-          <v-text-field v-model="material.name" :rules="[ v => !!v || 'Required' ]" label="Name*" outlined dense hide-details />
+          <v-text-field @change="isNameExists" v-model="material.name" :rules="[ v => !!v || 'Required' ]" label="Name*" outlined dense hide-details />
         </v-col>
         <v-col cols="12" sm="6" md="4">
           <v-text-field v-model="material.code" label="Code" outlined dense hide-details />
@@ -56,26 +56,27 @@ export default {
     reset() {
       this.$refs.form.reset()
     },
-    save() {
+    async isNameExists() {
+      await api.get('/rawMaterial/validate/name?name='+this.material.name)
+      .then( res => {
+        console.log(res)
+        if(res.data.success == true) {
+          this.material.name = ''
+          alert(res.data.message)
+        }
+      }).catch( e => console.log(e))
+    },
+    async save() {
       if(this.$refs.form.validate()) {
         console.log(this.material)
-        // const headers = {
-        //   'Cache-Control': null,
-        //   'X-Requested-With': null,
-        //   'Access-Control-Allow-Origin': '*',
-        //   'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE',
-        //   'Accept': 'application/json',
-        //   'Content-Type': 'application/json'
-        // }
-        // const headers = {
-        //   'Accept': 'application/json',
-        //   'Content-Type': 'application/json',
-        //   'Access-Control-Allow-Origin': '*',
-        // }
-        // axios.use(cors())
-        // axios.options('http://localhost:8082/',cors())
-        api.post('/rawMaterial', this.material)
-        .then( () => console.log('success')).catch( (e) => console.log(e))
+        if(confirm('Are you sure want to perferm the action?')) {
+          await api.post('/rawMaterial/save', this.material)
+          .then( (res) => {
+            console.log(res, 'success')
+            if(res.data.message) alert(res.data.message)
+            this.reset()
+          }).catch( (e) => console.log(e))
+        }
       }
     }
   },

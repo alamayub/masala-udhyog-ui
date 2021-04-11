@@ -9,8 +9,8 @@
       </template>
       <template v-slot:item.status="{ item }">
         <v-chip small :color="
-          item.status === 'Active' ? 'success'
-          : item.status === 'In-Active' ? 'error'
+          item.status === true ? 'success'
+          : item.status === false ? 'error'
           : item.status === 'Approved' ? 'success'
           : item.status === 'Canceled' ? 'error'
           : item.status === 'Pending' ? 'warning' : 'secondary' "
@@ -22,7 +22,7 @@
         <div style="min-width: 5px;">
           <v-tooltip bottom v-for="(a, index) in actions" :key="index">
             <template v-slot:activator="{ on, attrs }">
-            <v-btn small v-bind="attrs" v-on="on" :color="a.color" icon @click="a.name === 'View' ? gotoDetailPage(item) :a.name === 'Edit' ? gotoEditPage(item) : deleteItem(item, index, a) ">
+            <v-btn small v-bind="attrs" v-on="on" :color="a.color" icon @click="a.name === 'View' ? gotoDetailPage(item) :a.name === 'Edit' ? gotoEditPage(item) : deleteItem(item, a) ">
               <v-icon x-small>{{ a.icon }}</v-icon>
             </v-btn>
             </template>
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import api from '../helper/api'
 export default {
   props: {
     theader: Array,
@@ -65,18 +65,17 @@ export default {
       console.log(item)
       this.$router.push(`${this.$route.path}/edit/${item.id}`)
     },
-    async deleteItem(item, i, a) {
-      if(confirm('Are you sure, you want to delete this item?')) {
-        await axios.delete(`http://localhost:8082/${a.url}/delete?id=${item.id}`)
-        this.tbody.splice(i, 1)
-        alert('Item deleted successfully.')
-      }
+    async deleteItem(item, a) {
       console.log(item)
+      if(confirm('Are you sure, you want to delete this item?')) {
+        await api.delete(`${a.url}/delete?id=${item.id}`)
+        .then( res => {
+          this.tbody.splice(this.tbody.indexOf(item), 1)
+          if(res.data.message) alert(res.data.message)
+        })
+      }
     }
   },
-  created() {
-    console.log(this.$route)
-  }
 }
 </script>
 

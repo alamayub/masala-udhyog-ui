@@ -29,7 +29,8 @@
 </template>
 
 <script>
-import api from '../helper/api';
+// import api from '../helper/api';
+import axios from 'axios'
 import jwtDecode from 'jwt-decode'
 
 export default {
@@ -50,11 +51,16 @@ export default {
     async loginUser(){
       if(this.$refs.form.validate()) {
         this.overlay = true
-        await api.post('api/super/admin/login', { username: this.username, password: this.password })
+        const headers = {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': 'http://localhost:8080'
+        }
+        await axios.post('http://localhost:8082/api/login', { username: this.username, password: this.password }, { headers })
           .then(response => {
               console.log("token::",jwtDecode(response.data.token));
               console.log("token::",response.data);
-              localStorage.setItem("token",response.data)
+              localStorage.setItem("token", 'Bearer '+response.data.token)
               this.$router.push({ name: 'Dashboard' })
             }
           ).catch( e => console.log(e))

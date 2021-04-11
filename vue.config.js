@@ -6,13 +6,12 @@ module.exports = {
     port: 8080,
     // proxy : 'http://localhost:8082',
     proxy: {
-      '^/api': {
+      '/api/*': {
         target: 'http://localhost:8082',
         ws: true,
+        secure: false,
         changeOrigin: true,
-        pathRewrite: {
-          '^/api': ''
-        }
+        pathRewrite: { '^/api': '' }
       }
     }
   },

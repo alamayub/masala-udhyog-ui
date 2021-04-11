@@ -13,9 +13,9 @@ Vue.prototype.$http = api;
 api.defaults.timeout = 10000;
 api.interceptors.request.use(
   config => {
-    const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem("token")
     if (token) {
-      config.headers.common["Authorization"] = token;
+      config.headers.common["Authorization"] = token
     }
     return config;
   },
@@ -39,28 +39,23 @@ api.interceptors.response.use(
          
          //do something
           break;
-      
         case 401:
-          alert("session expired");
-          break;
-        case 403:
+          alert('Unauthorized');
           router.replace({
             path: "/login",
             query: { redirect: router.currentRoute.fullPath }
           });
-           break;
+          localStorage.removeItem('token')
+          break;
+        case 403:
+          alert('Access Forbidden.')
+          break;
         case 404:
-          alert('page not exist');
+          router.replace({ path: "*" });
           break;
         case 502:
-         setTimeout(() => {
-            router.replace({
-              path: "/login",
-              query: {
-                redirect: router.currentRoute.fullPath
-              }
-            });
-          }, 5000);
+          alert('Something went wrong.')
+          break;
       }
       return Promise.reject(error.response);
     }
@@ -69,6 +64,7 @@ api.interceptors.response.use(
 
 router.beforeEach((to, from, next) => {
   let token = localStorage.getItem('token')
+  // let token = 'token'
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!token) {
       next({ name: 'Login' })

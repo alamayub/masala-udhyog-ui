@@ -32,6 +32,7 @@
 
 <script>
 import DataTable from '../../../components/DataTable'
+import api from '../../../helper/api'
 export default {
   components: {
     DataTable
@@ -46,26 +47,24 @@ export default {
       { text: 'Status', value: 'status', class: 'primary white--text' },
       { text: 'Actions', value: 'actions', sortable: false, class: 'primary white--text' },
     ],
-    users: [
-      { name: 'Vhanu Enterprises', type: 'Vendor', phone: '051-6235295', address: 'DC Universe', status: 'Active' },
-      { name: 'Vhanu Palace', type: 'Customer', phone: '051-523625', address: 'DC Universe', status: 'Active' },
-      { name: 'Wonder Woman', type: 'Vendor', phone: 2454564, address: 'DC Universe', status: 'In-Active' },
-      { name: 'Dark Sheider', type: 'Customer', phone: 8677687, address: 'DC Universe', status: 'In-Active' },
-      { name: 'Bat Man', type: 'Customer', phone: 2453456, address: 'DC Universe', status: 'Active' },
-      { name: 'Wonder Woman', type: 'Vendor', phone: 2454564, address: 'DC Universe', status: 'In-Active' },
-      { name: 'Dark Sheider', type: 'Customer', phone: 8677687, address: 'DC Universe', status: 'In-Active' },
-      { name: 'Bat Man', type: 'Customer', phone: 2453456, address: 'DC Universe', status: 'Active' }
-    ],
+    users: [],
     actions: [
       { name: 'View', icon: 'mdi-eye', color: 'primary' },
       { name: 'Edit', icon: 'mdi-pencil', color: 'success' },
-      { name: 'Delete', icon: 'mdi-delete', color: 'red' }
+      { name: 'Delete', icon: 'mdi-delete', color: 'red', url: 'vendorAndCustomer' }
     ]
   }),
   methods: {
-    view(item) {
-      console.log(item)
+    async getUsers() {
+      await api.get('/vendorAndCustomer/findAll')
+      .then( res => {
+        console.log(res)
+        this.users = res.data.body
+      }).catch( e => console.log(e))
     }
+  },
+  mounted() {
+    this.getUsers()
   }
 }
 </script>

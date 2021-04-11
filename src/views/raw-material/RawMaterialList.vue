@@ -60,12 +60,13 @@ import api from '../../helper/api';
         await api.get('/rawMaterial/findAll')
         .then( res => {
           console.log(res)
-          this.lists = res.data
+          this.lists = res.data.body
         }).catch( e => console.log(e))
       }
     },
     mounted() {
       this.getLists()
+      console.log(localStorage.getItem('token'))
     }
   }
 </script>

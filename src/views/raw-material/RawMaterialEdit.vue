@@ -46,25 +46,26 @@ export default {
     },
     async update() {
       if(this.$refs.form.validate()) {
-        console.log(this.material)
-        // const headers = {
-        //   'Accept': 'application/json',
-        //   'Content-Type': 'application/json'
-        // }
-        await api.put('/rawMaterial', this.material)
-        .then( () => console.log('success')).catch( (e) => console.log(e))
+        if(confirm('Are you sure want to perform the action?')) {
+          await api.put('/rawMaterial/update', this.material)
+          .then( (res) => {
+            console.log(res)
+            console.log(res.data.message)
+            if(res.data.message) alert(res.data.message)
+            this.goBack()
+          }).catch( (e) => console.log(e))
+        }
       }
     },
     async getItem() {
       await api.get('/rawMaterial/findById?id='+this.$route.params.id)
       .then( (res) => {
         console.log(res)
-        this.material = res.data
+        this.material = res.data.body
       }).catch( (e) => console.log(e))  
     }
   },
   created() {
-    console.log(this.$route.params.id)  
     this.getItem()
   }
 };
