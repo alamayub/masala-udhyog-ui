@@ -25,7 +25,6 @@
 <script>
 import DataTable from "@/components/DataTable";
 import DatePicker from "@/components/DatePicker";
-import helper from '../../../helper/functions'
 
 export default {
   components: {
@@ -43,15 +42,19 @@ export default {
       { text: 'Grand Total (Rs.)', value: 'finalRate', class: 'primary white--text'},
       { text: 'Actions', value: 'actions', sortable: false , class: 'primary white--text'},
     ],
-    lists: [],
     actions: [
       { name: 'View', icon: 'mdi-eye', color: 'primary' },
       { name: 'Canceled', icon: 'mdi-close', color: 'red'},
       { name: 'Print', icon: 'mdi-printer', color: 'secondary'}
     ]
   }),
+  computed: {
+    lists() {
+      return this.$store.state.lists
+    }
+  },
   mounted() {
-    helper.findAll('purchase')
+    this.$store.dispatch('findAll', 'purchase')
   }
 }
 </script>

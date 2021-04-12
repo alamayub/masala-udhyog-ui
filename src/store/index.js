@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import api from '../helper/api'
 
 Vue.use(Vuex)
 
@@ -18,6 +19,16 @@ export default new Vuex.Store({
     },
     SET_LISTS(state, payload) {
       state.lists = payload
+    }
+  },
+  actions: {
+    async findAll({ commit }, para) {
+      await api.get(`${para}/findAll`).then( res => {
+        console.log(res)
+        console.log('body',res.data.body)
+        // this.$store.commit('SET_LISTS', res.data.body)
+        commit('SET_LISTS', res.data.body)
+      }).catch( e => console.log(e))
     }
   }
 })

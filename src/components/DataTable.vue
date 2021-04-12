@@ -3,7 +3,7 @@
     <v-card-title class="pa-0 my-3">
       <v-text-field v-model="search" outlined dense append-icon="mdi-magnify" label="Search" hide-details />
     </v-card-title>
-    <v-data-table height="288" :headers="theader" :items="tbody" :search="search" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer @page-count="pageCount = $event">
+    <v-data-table height="288" :headers="theader" :items="tbody == null ? [] : tbody" :search="search" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer @page-count="pageCount = $event">
       <template v-slot:item.sno="{ item }">
         <span class="caption font-weight-bold" style="width: 5px">{{ getSNO(item)+1 }}</span>
       </template>

@@ -27,48 +27,37 @@
 
 <script>
 import DataTable from "../../components/DataTable";
-import api from '../../helper/api';
-import helper from '../../helper/functions';
-  export default {
-    components: {
-      DataTable,
-    },
-    data () {
-      return {
-        maxDate: new Date().toISOString().substr(0, 10),
-        menuDateFrom: false,
-        dateFrom: new Date().toISOString().substr(0, 10),
-        menuDateTo: false,
-        dateTo: new Date().toISOString().substr(0, 10),
-        search: '',
-        headers: [
-          { text: 'S.No', value: 'sno', class: 'primary white--text' },
-          { text: 'Name', value: 'name', align: 'start', sortable: false, class: 'primary white--text' },
-          { text: 'Code', value: 'code', class: 'primary white--text' },
-          { text: 'Brand', value: 'brand', class: 'primary white--text' },
-          { text: 'Description', value: 'description', class: 'primary white--text' },
-          { text: 'Actions', value: 'actions', sortable: false, class: 'primary white--text' },
-        ],
-        lists: [],
-        actions: [
-          { name: 'Edit', icon: 'mdi-pencil', color: 'success' },
-          { name: 'Delete', icon: 'mdi-delete', url: 'rawMaterial', color: 'red' }
-        ]
-      }
-    },
-    methods: {
-      async getLists() {
-        await api.get('/rawMaterial/findAll')
-        .then( res => {
-          console.log(res)
-          this.lists = res.data.body
-        }).catch( e => console.log(e))
+export default {
+  components: {
+    DataTable,
+  },
+    data : () => ({
+      maxDate: new Date().toISOString().substr(0, 10),
+      menuDateFrom: false,
+      dateFrom: new Date().toISOString().substr(0, 10),
+      menuDateTo: false,
+      dateTo: new Date().toISOString().substr(0, 10),
+      search: '',
+      headers: [
+        { text: 'S.No', value: 'sno', class: 'primary white--text' },
+        { text: 'Name', value: 'name', align: 'start', sortable: false, class: 'primary white--text' },
+        { text: 'Code', value: 'code', class: 'primary white--text' },
+        { text: 'Brand', value: 'brand', class: 'primary white--text' },
+        { text: 'Description', value: 'description', class: 'primary white--text' },
+        { text: 'Actions', value: 'actions', sortable: false, class: 'primary white--text' },
+      ],
+      actions: [
+        { name: 'Edit', icon: 'mdi-pencil', color: 'success' },
+        { name: 'Delete', icon: 'mdi-delete', url: 'rawMaterial', color: 'red' }
+      ]
+    }),
+    computed: {
+      lists() {
+        return this.$store.state.lists
       }
     },
     mounted() {
-      this.getLists()
-      helper.findAll('rawMaterial')
-      console.log(this.$store.state.lists)
+      this.$store.dispatch('findAll', 'rawMaterial')
     }
   }
 </script>

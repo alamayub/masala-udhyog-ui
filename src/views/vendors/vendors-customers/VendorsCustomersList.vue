@@ -32,7 +32,6 @@
 
 <script>
 import DataTable from '../../../components/DataTable'
-import api from '../../../helper/api'
 export default {
   components: {
     DataTable
@@ -47,24 +46,19 @@ export default {
       { text: 'Status', value: 'status', class: 'primary white--text' },
       { text: 'Actions', value: 'actions', sortable: false, class: 'primary white--text' },
     ],
-    users: [],
     actions: [
       { name: 'View', icon: 'mdi-eye', color: 'primary' },
       { name: 'Edit', icon: 'mdi-pencil', color: 'success' },
       { name: 'Delete', icon: 'mdi-delete', color: 'red', url: 'vendorAndCustomer' }
     ]
   }),
-  methods: {
-    async getUsers() {
-      await api.get('/vendorAndCustomer/findAll')
-      .then( res => {
-        console.log(res)
-        this.users = res.data.body
-      }).catch( e => console.log(e))
+  computed: {
+    users() {
+      return this.$store.state.lists
     }
   },
   mounted() {
-    this.getUsers()
+    this.$store.dispatch('findAll', 'vendorAndCustomer')
   }
 }
 </script>
