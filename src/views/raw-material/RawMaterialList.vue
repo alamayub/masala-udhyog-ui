@@ -28,6 +28,7 @@
 <script>
 import DataTable from "../../components/DataTable";
 import api from '../../helper/api';
+import helper from '../../helper/functions';
   export default {
     components: {
       DataTable,
@@ -66,7 +67,8 @@ import api from '../../helper/api';
     },
     mounted() {
       this.getLists()
-      console.log(localStorage.getItem('token'))
+      helper.findAll('rawMaterial')
+      console.log(this.$store.state.lists)
     }
   }
 </script>

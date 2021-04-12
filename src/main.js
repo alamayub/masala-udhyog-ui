@@ -41,11 +41,11 @@ api.interceptors.response.use(
           break;
         case 401:
           alert('Unauthorized');
+          localStorage.removeItem('token')
           router.replace({
             path: "/login",
             query: { redirect: router.currentRoute.fullPath }
           });
-          localStorage.removeItem('token')
           break;
         case 403:
           alert('Access Forbidden.')
@@ -64,7 +64,6 @@ api.interceptors.response.use(
 
 router.beforeEach((to, from, next) => {
   let token = localStorage.getItem('token')
-  // let token = 'token'
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!token) {
       next({ name: 'Login' })

@@ -6,7 +6,7 @@
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-row align="center">
         <v-col cols='12' sm='6' md='4' lg='3'>
-          <v-text-field v-model="user.name" label="Full Name" :rules="[v => !!v || 'Name is required']" hide-details outlined dense required />
+          <v-text-field v-model="user.name" label="Full Name*" :rules="[v => !!v || 'Name is required']" hide-details outlined dense required />
         </v-col>
         <v-col cols='12' sm='6' md='4' lg='3'>
           <v-text-field v-model="user.code" label="Code" hide-details outlined dense required />
@@ -24,10 +24,10 @@
           <v-text-field v-model="user.panvat" label="Pan / VAT" type="number" hide-details outlined dense required />
         </v-col>
         <v-col cols='12' sm='6' md='4' lg='3'>
-          <v-select v-model="user.type" :items="types" :rules="[v => !!v || 'Type is required']" label="Account Type" hide-details outlined dense required />
+          <v-select v-model="user.type" :items="types" :rules="[v => !!v || 'Type is required']" label="Account Type*" hide-details outlined dense required />
         </v-col>
         <v-col cols='12' sm='6' md='4' lg='3'>
-          <v-select v-model="user.enable" :items="enabled" :rules="[v => !!v || 'Status is required']" label="Status" hide-details outlined dense required />
+          <v-select v-model="user.enable" :items="enabled" :rules="[v => !!v || 'Status is required']" label="Status*" hide-details outlined dense required />
         </v-col>
         <v-col cols='12' sm='6' md='4' lg='3'>
           <v-text-field v-model="user.info" label="Additional Information" hide-details outlined dense required />

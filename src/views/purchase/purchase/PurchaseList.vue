@@ -25,7 +25,7 @@
 <script>
 import DataTable from "@/components/DataTable";
 import DatePicker from "@/components/DatePicker";
-import axios from 'axios';
+import helper from '../../../helper/functions'
 
 export default {
   components: {
@@ -50,17 +50,8 @@ export default {
       { name: 'Print', icon: 'mdi-printer', color: 'secondary'}
     ]
   }),
-  methods: {
-    async getLists() {
-      await axios.get('http://localhost:8082/purchase')
-      .then( res => {
-        console.log(res)
-        this.lists = res.data
-      }).catch( e => console.log(e))
-    }
-  },
   mounted() {
-    this.getLists()
+    helper.findAll('purchase')
   }
 }
 </script>

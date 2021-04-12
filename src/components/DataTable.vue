@@ -9,8 +9,8 @@
       </template>
       <template v-slot:item.status="{ item }">
         <v-chip small :color="
-          item.status === true ? 'success'
-          : item.status === false ? 'error'
+          item.enable === true ? 'success'
+          : item.enable === false ? 'error'
           : item.status === 'Approved' ? 'success'
           : item.status === 'Canceled' ? 'error'
           : item.status === 'Pending' ? 'warning' : 'secondary' "
