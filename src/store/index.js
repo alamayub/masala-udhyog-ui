@@ -23,10 +23,12 @@ export default new Vuex.Store({
   },
   actions: {
     async findAll({ commit }, para) {
+      commit('SET_IS_LOADING', true)
       await api.get(`${para}/findAll`).then( res => {
         console.log(res)
         commit('SET_LISTS', res.data.body)
       }).catch( e => console.log(e))
-    }
+      commit('SET_IS_LOADING', false)
+    },
   }
 })

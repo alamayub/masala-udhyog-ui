@@ -8,7 +8,7 @@
         <DatePicker labelName="To Date" />
       </v-col>
       <v-spacer></v-spacer>
-      <v-col cols="12" sm="4" md="3" lg="2" class="pb-0">
+      <v-col cols="12" sm="4" md="3" lg="2" class="pb-0 text-sm-right">
         <v-btn color="primary" dark to="purchase/add">
           <v-icon left size='20'>mdi-plus</v-icon> 
           <span>Create New</span>

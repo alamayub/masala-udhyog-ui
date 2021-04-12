@@ -19,7 +19,7 @@
     <v-row>
       <v-col cols='12' class="pt-0">
         <v-divider></v-divider>
-        <DataTable :theader="headers" :tbody="lists" :actions="actions" />
+        <DataTable :theader="headers" :tbody="lists == null ? [] : lists" :actions="actions" />
       </v-col>
     </v-row>
   </v-container>
@@ -31,33 +31,33 @@ export default {
   components: {
     DataTable,
   },
-    data : () => ({
-      maxDate: new Date().toISOString().substr(0, 10),
-      menuDateFrom: false,
-      dateFrom: new Date().toISOString().substr(0, 10),
-      menuDateTo: false,
-      dateTo: new Date().toISOString().substr(0, 10),
-      search: '',
-      headers: [
-        { text: 'S.No', value: 'sno', class: 'primary white--text' },
-        { text: 'Name', value: 'name', align: 'start', sortable: false, class: 'primary white--text' },
-        { text: 'Code', value: 'code', class: 'primary white--text' },
-        { text: 'Brand', value: 'brand', class: 'primary white--text' },
-        { text: 'Description', value: 'description', class: 'primary white--text' },
-        { text: 'Actions', value: 'actions', sortable: false, class: 'primary white--text' },
-      ],
-      actions: [
-        { name: 'Edit', icon: 'mdi-pencil', color: 'success' },
-        { name: 'Delete', icon: 'mdi-delete', url: 'rawMaterial', color: 'red' }
-      ]
-    }),
-    computed: {
-      lists() {
-        return this.$store.state.lists
-      }
-    },
-    mounted() {
-      this.$store.dispatch('findAll', 'rawMaterial')
+  data : () => ({
+    maxDate: new Date().toISOString().substr(0, 10),
+    menuDateFrom: false,
+    dateFrom: new Date().toISOString().substr(0, 10),
+    menuDateTo: false,
+    dateTo: new Date().toISOString().substr(0, 10),
+    search: '',
+    headers: [
+      { text: 'S.No', value: 'sno', class: 'primary white--text' },
+      { text: 'Name', value: 'name', align: 'start', sortable: false, class: 'primary white--text' },
+      { text: 'Code', value: 'code', class: 'primary white--text' },
+      { text: 'Brand', value: 'brand', class: 'primary white--text' },
+      { text: 'Description', value: 'description', class: 'primary white--text' },
+      { text: 'Actions', value: 'actions', sortable: false, class: 'primary white--text' },
+    ],
+    actions: [
+      { name: 'Edit', icon: 'mdi-pencil', color: 'success' },
+      { name: 'Delete', icon: 'mdi-delete', url: 'rawMaterial', color: 'red' }
+    ]
+  }),
+  computed: {
+    lists() {
+      return this.$store.state.lists
     }
+  },
+  mounted() {
+    this.$store.dispatch('findAll', 'rawMaterial')
   }
+}
 </script>

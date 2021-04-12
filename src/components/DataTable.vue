@@ -3,7 +3,7 @@
     <v-card-title class="pa-0 my-3">
       <v-text-field v-model="search" outlined dense append-icon="mdi-magnify" label="Search" hide-details />
     </v-card-title>
-    <v-data-table height="288" :headers="theader" :items="tbody == null ? [] : tbody" :search="search" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer @page-count="pageCount = $event">
+    <v-data-table height="288" :headers="theader" :items="tbody == null ? [] : tbody" :search="search" :loading="isLoading" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer @page-count="pageCount = $event">
       <template v-slot:item.sno="{ item }">
         <span class="caption font-weight-bold" style="width: 5px">{{ getSNO(item)+1 }}</span>
       </template>
@@ -15,7 +15,7 @@
           : item.status === 'Canceled' ? 'error'
           : item.status === 'Pending' ? 'warning' : 'secondary' "
           dark>
-          {{ item.status }}
+          {{ item.status }} 
         </v-chip>
       </template>
       <template v-slot:item.actions="{ item }">
@@ -74,6 +74,11 @@ export default {
       }
     }
   },
+  computed: {
+    isLoading() {
+      return this.$store.state.isLoading
+    }
+  }
 }
 </script>
 

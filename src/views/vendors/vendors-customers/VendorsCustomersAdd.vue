@@ -1,5 +1,8 @@
 <template>
   <v-container fluid class="fill-height">
+    <v-overlay :value="overlay">
+      <v-progress-circular indeterminate size="64" />
+    </v-overlay>
     <v-card elevation='0'>
       <v-card-title class="px-0 pt-0">Add Vendor or Supplier</v-card-title>
     </v-card>
@@ -63,6 +66,7 @@
 import api from  '../../../helper/api'
 export default {
   data: () => ({
+    overlay: false,
     valid: true,
     user: {
       name: '',
@@ -90,11 +94,13 @@ export default {
     async addVendorAndCustomer () {
       if(this.$refs.form.validate()) {
         if(confirm('Are you sure want to perform the action?')) {
+          this.overlay = true
           await api.post('/vendorAndCustomer/save', this.user)
           .then( res => {
             if(res.data.message) alert(res.data.message)
             this.reset()
           }).catch( e => console.log(e))
+          this.overlay = false
         }
       }
     },
