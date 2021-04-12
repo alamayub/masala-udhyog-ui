@@ -1,5 +1,8 @@
 <template>
   <v-container class="mt-3 pa-0" fluid>
+    <v-overlay :value="overlay">
+      <v-progress-circular indeterminate size="64" />
+    </v-overlay>
     <v-row>
       <v-col class="pb-0" cols="12" sm="6" md="4">
         <v-select v-model="vendor" :items="vendors" label="Vendor" outlined dense hide-details></v-select>
@@ -86,7 +89,7 @@
               <v-icon left size='20'>mdi-cached</v-icon>
               <span>reset</span>
             </v-btn>
-            <v-btn  color="success">
+            <v-btn  color="success" @click="save">
               <v-icon left size='20'>mdi-content-save-move-outline</v-icon>
               <span>save</span>
             </v-btn>
@@ -99,23 +102,24 @@
 
 <script>
 import DatePicker from "@/components/DatePicker";
+import api from '../../../helper/api';
 
 export default {
   components: {
     DatePicker
   },
   data: () => ({
+    overlay: false,
     vendors: ['Medilanee Pvt. Ltd', 'Natural Pvt. Ltd', 'Clark Pvt.Ltd', 'Himalayan Nepal pvt. Ltd'],
     vendor: null,
     billTypes: ['VAT', 'PAN'],
     billType: 'PAN',
     taxTypes: ['Inclusive', 'Exclusive'],
     taxType: 'Exclusive',
-    items: ['Pen', 'Pencil', 'Copy', 'Book', 'Painting Box'],
+    // items: ['Pen', 'Pencil', 'Copy', 'Book', 'Painting Box'],
     rows: [
       { item: '', stock: null, rate: null, quantity: null, amount: null }
-    ]
-    ,
+    ],
     total: null,
     discount: null,
     tax: null,
@@ -148,11 +152,32 @@ export default {
       this.getGranTotal()
     },
     getGranTotal() {
-      this.grandTotal = parseFloat(this.total) - parseFloat(this.discount ? this.discount: 0) + parseFloat(this.tax ? this.discount : 0)
+      this.grandTotal = parseFloat(this.total) - parseFloat(this.discount ? this.discount: 0) + parseFloat(this.tax ? this.tax : 0)
     },
     goBack() {
       this.$router.go(-1)
+    },
+    async save() {
+      this.overlay = true
+      await api.post('purchase/save', { particular: this.rows[0].item, final_rate: this.rows[0].rate, quantity: this.rows[0].quantity, discount_amount: this.rows[0].discount })
+      .then( res => {
+        console.log('purchase add successful')
+        if(res.data.message) alert(res.data.message)
+      }).catch( e => console.log(e))
+      this.overlay = false
     }
+  },
+  computed: {
+    items() {
+      let lists = []
+      this.$store.state.lists.forEach( l => {
+        lists.push(l.name)
+      });
+      return lists
+    },
+  },
+  created() {
+    this.$store.dispatch('findAll', 'rawMaterial')
   }
 }
 </script>

@@ -6,6 +6,9 @@
     <v-form ref="form" lazy-validation v-model="valid">
       <v-row>
         <v-col cols="12" sm="6" md="4" lg="3">
+          <v-text-field v-model="data.id" dense outlined hide-details label="ID" readonly />
+        </v-col>
+        <v-col cols="12" sm="6" md="4" lg="3">
           <v-text-field v-model="data.name" dense outlined hide-details label="Full Name*" :rules="[ v => !!v || 'Full name is required' ]" />
         </v-col>
         <v-col cols="12" sm="6" md="4" lg="3">
@@ -47,8 +50,8 @@ import api from '../../../helper/api'
 export default {
   data: () => ({
     overlay: false,
-    valid: true,
     data: {},
+    valid: true,
     emailRules: [
       v => !!v || 'E-mail is required',
       v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'

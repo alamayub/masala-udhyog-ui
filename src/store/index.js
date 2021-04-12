@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     drawer: null,
     isLoading: false,
-    lists: []
+    lists: [],
+    item: {}
   },
   mutations: {
     SET_DRAWER (state, payload) {
@@ -19,6 +20,9 @@ export default new Vuex.Store({
     },
     SET_LISTS(state, payload) {
       state.lists = payload
+    },
+    SET_ITEM(state, payload) {
+      state.item = payload
     }
   },
   actions: {
