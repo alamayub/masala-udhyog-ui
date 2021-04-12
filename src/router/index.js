@@ -58,6 +58,7 @@ import StocksAdd from '../views/stocks/stocks/StocksAdd.vue'
 import VendorsCustomers from '../views/vendors/VendorsCustomers.vue'
 import VC from '../views/vendors/vendors-customers/VC.vue'
 import VendorsCustomersAdd from '../views/vendors/vendors-customers/VendorsCustomersAdd.vue'
+import VendorsCustomersEdit from '../views/vendors/vendors-customers/VendorsCustomersEdit'
 import VendorsCustomersDetail from '../views/vendors/vendors-customers/VendorsCustomersDetail.vue'
 import VendorsCustomersList from '../views/vendors/vendors-customers/VendorsCustomersList.vue'
 
@@ -188,6 +189,7 @@ const routes = [
             children: [
               { path: 'add', name: 'Vendors Customers Add', component: VendorsCustomersAdd },
               { path: 'detail/:id', name: 'Vendors Customers Detail', component: VendorsCustomersDetail },
+              { path: 'edit/:id', name: 'Vendors Customers Edit', component: VendorsCustomersEdit },
               { path: '', name: 'Vendors Customers List', component: VendorsCustomersList }
             ]
           }

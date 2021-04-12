@@ -57,11 +57,9 @@ export default {
     },
     gotoDetailPage(item) {
       console.log(item)
-      console.log(this.$route)
-      this.$router.push(`${this.$route.path}/detail/${this.tbody.indexOf(item)}`)
+      this.$router.push(`${this.$route.path}/detail/${item.id}`)
     },
     gotoEditPage(item) {
-      console.log('edit item')
       console.log(item)
       this.$router.push(`${this.$route.path}/edit/${item.id}`)
     },
