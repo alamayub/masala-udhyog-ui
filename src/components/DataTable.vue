@@ -33,7 +33,7 @@
 
       <!-- Purchase -->
       <template v-slot:item.purchaseDate="{ item }">
-        <span class="caption ml-1">{{ billDate(item.purchaseDate) }}</span>
+        <span class="caption ml-1">{{ item.purchaseDate }}</span>
       </template>
       <template v-slot:item.amount="{ item }">
         <span class="caption font-weight-bold">{{ item.finalRate }}</span>

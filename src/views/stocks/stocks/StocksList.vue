@@ -40,15 +40,20 @@ export default {
       { text: 'Name', value: 'name',class: 'primary white--text' },
       { text: 'Brand', value: 'brand', class: 'primary white--text'},
       { text: 'Unit', value: 'unit', class: 'primary white--text'},
-      { text: 'Quantity', value: 'quanity', class: 'primary white--text'},
+      { text: 'Quantity', value: 'quantity', class: 'primary white--text'},
       { text: 'Stock', value: 'stock',class: 'primary white--text' }
     ],
-    stocks: [
-      { name: 'Book', stock: 25 },
-      { name: 'Pen', stock: 25 },
-      { name: 'Pencil', stock: 25 },
-      { name: 'Copy', stock: 25 }
-    ]
-  })
+  }),
+  computed: {
+    stocks() {
+      return this.$store.state.lists
+    }
+  },
+  created() {
+    this.$store.dispatch({
+      type: 'findAll', 
+      url: 'finished/product/stock'
+    })
+  }
 }
 </script>

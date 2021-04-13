@@ -54,9 +54,9 @@ export default {
         const headers = {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': 'http://localhost:8080'
+          'Access-Control-Allow-Origin': 'http://localhost:8081'
         }
-        await axios.post('http://localhost:8082/api/login', { username: this.username, password: this.password }, { headers })
+        await axios.post('http://localhost:8080/api/login', { username: this.username, password: this.password }, { headers })
           .then(response => {
               console.log("token::",jwtDecode(response.data.token));
               console.log("token::",response.data);

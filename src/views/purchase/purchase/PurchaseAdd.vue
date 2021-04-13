@@ -50,6 +50,7 @@
               <td><v-text-field v-model="row.stock" type="number" class="text-right" dense outlined hide-details readonly /></td>
               <td><v-text-field v-model="row.rate" type="number" class="text-right" dense outlined hide-details @input="getAmount(row)" /></td>
               <td><v-text-field v-model="row.quantity" type="number" class="text-right" dense outlined hide-details @input="getAmount(row)" /></td>
+              <td><v-text-field v-model="row.unit" type="number" class="text-right" dense outlined hide-details label='Unit' /></td>
               <td><v-text-field v-model="row.amount" type="number" class="text-right" dense outlined hide-details readonly /></td>
               <td>
                 <v-btn class='red' dark icon @click="removeCurrentRow" v-show="rows.length > 1">
@@ -119,7 +120,7 @@ export default {
     taxType: 'Exclusive',
     // items: ['Pen', 'Pencil', 'Copy', 'Book', 'Painting Box'],
     rows: [
-      { item: '', stock: null, rate: null, quantity: null, amount: null }
+      { item: '', stock: null, rate: null, quantity: null, unit: null, amount: null }
     ],
     total: null,
     discount: null,
@@ -170,8 +171,9 @@ export default {
           particular: this.rows[0].item, 
           purchaseDate: this.date, 
           finalRate: parseFloat(this.rows[0].rate), 
-          quantity: parseFloat(this.rows[0].quantity), 
-          discounAmount: parseFloat(this.rows[0].discount) 
+          quantity: parseFloat(this.rows[0].quantity),
+          unitOfMeasurment: parseInt(this.row[0].unit),
+          discounAmount: parseFloat(this.discount) 
         })
       .then( res => {
         console.log(this.date)

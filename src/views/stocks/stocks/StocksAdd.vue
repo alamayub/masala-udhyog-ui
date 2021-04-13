@@ -6,7 +6,7 @@
     <v-form ref='form' lazy-validation v-model="valid">
       <v-row>
         <v-col cols="12" sm="6" md="4" lg="3">
-          <v-autocomplete v-model="stock.name" label="Name" :items="['Item1', 'Item2', 'Item3']" :rules="[ v => !!v || 'Required' ]" />  
+          <v-autocomplete v-model="stock.name" label="Name" :items="lists" :rules="[ v => !!v || 'Required' ]" />  
         </v-col>
         <v-col cols="12" sm="6" md="4" lg="3">
           <v-text-field v-model="stock.brand" label="Brand" />  
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import api from '../../../helper/api'
 export default {
   data: () => ({
     valid: true,  
@@ -56,7 +57,8 @@ export default {
       unit: '',
       packet: null,
       description: ''  
-    }
+    },
+    lists: []
   }),  
   methods: {
     goBack() {
@@ -65,20 +67,35 @@ export default {
     reset() {
       this.$refs.form.reset()  
     },
-    save() {
-      this.$refs.form.validate()  
+    async save() {
+      if(this.$refs.form.validate()) {
+        this.$store.commit('SET_IS_LOADING', true)
+        await api.post('finished/product/stock/save', this.stock).then( res => {
+          if(res.data.message) alert(res.data.message)
+          console.log(res)
+          this.reset()
+        }).catch( e => console.log(e))
+        this.$store.commit('SET_IS_LOADING', false)
+      }  
+    },
+    getLists() {
+      this.$store.state.lists.forEach(li => {
+        this.lists.push(li.name)
+      });
     }
   },
   computed: {
     overlay() {
       return this.$store.state.isLoading
-    }
+    },
   },
   created() {
     this.$store.dispatch({
       type: 'findAll',
       url: 'rawMaterial'
-    })
+    }).then( () => {
+      this.getLists()
+    }).catch( e => console.log(e))
   } 
 }
 </script>
