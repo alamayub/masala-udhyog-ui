@@ -2,10 +2,20 @@
   <v-container fluid class="px-0 mt-3">
     <v-row>
       <v-col cols="12" sm="4" md="3" lg="2" class="pb-0">
-        <DatePicker labelName="From Date"/>
+        <v-menu v-model="menuFromDate" transition="scale-transition" offset-y max-width="290px" min-width="auto">
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field hide-details v-model="fromDate" label="From Date" color="primary" prepend-inner-icon="mdi-calendar" outlined dense readonly v-bind="attrs" v-on="on" />
+          </template>
+          <v-date-picker @change="dateValidate" v-model="fromDate" color="primary" :max="maxDate" scrollable />
+        </v-menu>
       </v-col>
       <v-col cols="12" sm="4" md="3" lg="2" class="pb-0">
-        <DatePicker labelName="To Date" />
+        <v-menu v-model="menuToDate" transition="scale-transition" offset-y max-width="290px" min-width="auto">
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field hide-details v-model="toDate" label="To Date" color="primary" prepend-inner-icon="mdi-calendar" outlined dense readonly v-bind="attrs" v-on="on" />
+          </template>
+          <v-date-picker @change="dateValidate" v-model="toDate" color="primary" :max="maxDate" scrollable />
+        </v-menu>
       </v-col>
       <v-spacer></v-spacer>
       <v-col cols="12" sm="4" md="3" lg="2" class="pb-0 text-sm-right">
@@ -24,22 +34,27 @@
 
 <script>
 import DataTable from "@/components/DataTable";
-import DatePicker from "@/components/DatePicker";
 
 export default {
   components: {
-    DataTable,DatePicker
+    DataTable
   },
   data:() => ({
+    menuFromDate: false,
+    maxDate: new Date().toISOString().substr(0, 10),
+    fromDate: new Date().toISOString().substr(0, 10),
+    menuToDate: false,
+    toDate: new Date().toISOString().substr(0, 10),
     header: [
       { text: 'S.N.', align: 'start', sortable: true, value: 'sno', class: 'primary white--text' },
-      { text: 'Purchase Bill No.', value: 'id', class: 'primary white--text' },
+      // { text: 'Purchase Bill No.', value: 'id', class: 'primary white--text' },
+      { text: 'Particular', value: 'particular', class: 'primary white--text' },
       { text: 'Bill Date', value: 'purchaseDate' , class: 'primary white--text'},
       { text: 'Vendor', value: 'vendor', class: 'primary white--text' },
-      { text: 'Amount (Rs.)', value: 'finalRate', class: 'primary white--text' },
-      { text: 'Discount (Rs.)', value: 'discountAmount', class: 'primary white--text'},
-      { text: 'Sub Total (Rs.)', value: 'finalRate', class: 'primary white--text'},
-      { text: 'Grand Total (Rs.)', value: 'finalRate', class: 'primary white--text'},
+      { text: 'Amount (Rs.)', align: 'right', value: 'amount', class: 'primary white--text' },
+      { text: 'Discount (Rs.)', align: 'right', value: 'discountAmount', class: 'primary white--text'},
+      { text: 'Sub Total (Rs.)', align: 'right', value: 'subTotal', class: 'primary white--text'},
+      { text: 'Grand Total (Rs.)', align: 'right', value: 'grandTotal', class: 'primary white--text'},
       { text: 'Actions', value: 'actions', sortable: false , class: 'primary white--text'},
     ],
     actions: [
@@ -51,10 +66,36 @@ export default {
   computed: {
     lists() {
       return this.$store.state.lists
+    },
+    ToDate() {
+      return new Date().toISOString().substr(0, 10)
     }
   },
-  mounted() {
-    this.$store.dispatch('findAll', 'purchase')
+  methods: {
+    dateValidate() {
+      if(this.fromDate == null || this.toDate == null) alert('Dates can not be null.')
+      else {
+        if(this.fromDate > this.toDate) {
+          this.fromDate = null
+          alert('From date can not be greater than to date.')
+        }
+        else if(this.toDate < this.fromDate) {
+          this.toDate = null
+          alert('To date can not be smaller than from date.')
+        }
+        else this.getData()
+      }
+    },
+    getData() {
+      this.$store.dispatch({
+        type: 'findAll', 
+        url: 'purchase', 
+        para: { fromDate: this.fromDate, toDate: this.toDate }
+      })
+    }
+  },
+  created() {
+    this.getData()
   }
 }
 </script>

@@ -15,7 +15,12 @@
         <v-select v-model="taxType" :items="taxTypes" label="Tax Inclusive/Exclusive" hide-details outlined dense></v-select>
       </v-col>
       <v-col class="pb-0" cols="12" sm="3" md="2">
-        <DatePicker labelName="Bill Date"/>
+        <v-menu v-model="menuDate" transition="scale-transition" offset-y max-width="290px" min-width="auto">
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field hide-details v-model="date" label="From Date" color="primary" prepend-inner-icon="mdi-calendar" outlined dense readonly v-bind="attrs" v-on="on" />
+          </template>
+          <v-date-picker v-model="date" color="primary" :max="maxDate" scrollable />
+        </v-menu>
       </v-col>
       <v-col class="pb-0" cols="12" sm="3" md="2">
         <v-text-field label="Bill No" value="2077-00041" readonly hide-details outlined dense />
@@ -101,13 +106,9 @@
 </template>
 
 <script>
-import DatePicker from "@/components/DatePicker";
 import api from '../../../helper/api';
 
 export default {
-  components: {
-    DatePicker
-  },
   data: () => ({
     overlay: false,
     vendors: ['Medilanee Pvt. Ltd', 'Natural Pvt. Ltd', 'Clark Pvt.Ltd', 'Himalayan Nepal pvt. Ltd'],
@@ -123,7 +124,12 @@ export default {
     total: null,
     discount: null,
     tax: null,
-    grandTotal: null
+    grandTotal: null,
+
+    // Date
+    menuDate: false,
+    date: new Date().toISOString().substr(0, 10),
+    maxDate: new Date().toISOString().substr(0, 10),
   }),
   methods:{
     cloneLastTr() {
@@ -159,8 +165,16 @@ export default {
     },
     async save() {
       this.overlay = true
-      await api.post('purchase/save', { particular: this.rows[0].item, final_rate: this.rows[0].rate, quantity: this.rows[0].quantity, discount_amount: this.rows[0].discount })
+      await api.post('purchase/save', 
+        { 
+          particular: this.rows[0].item, 
+          purchaseDate: this.date, 
+          finalRate: parseFloat(this.rows[0].rate), 
+          quantity: parseFloat(this.rows[0].quantity), 
+          discounAmount: parseFloat(this.rows[0].discount) 
+        })
       .then( res => {
+        console.log(this.date)
         console.log('purchase add successful')
         if(res.data.message) alert(res.data.message)
       }).catch( e => console.log(e))
@@ -177,7 +191,10 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch('findAll', 'rawMaterial')
+    this.$store.dispatch({ 
+      type: 'findAll', 
+      url: 'rawMaterial'
+    })
   }
 }
 </script>

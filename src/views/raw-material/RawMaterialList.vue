@@ -56,8 +56,11 @@ export default {
       return this.$store.state.lists
     }
   },
-  mounted() {
-    this.$store.dispatch('findAll', 'rawMaterial')
+  created() {
+    this.$store.dispatch({
+      type: 'findAll', 
+      url: 'rawMaterial'
+    })
   }
 }
 </script>

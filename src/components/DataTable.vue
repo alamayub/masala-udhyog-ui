@@ -5,7 +5,7 @@
     </v-card-title>
     <v-data-table height="288" :headers="theader" :items="tbody == null ? [] : tbody" :search="search" :loading="isLoading" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer @page-count="pageCount = $event">
       <template v-slot:item.sno="{ item }">
-        <span class="caption font-weight-bold" style="width: 5px">{{ getSNO(item)+1 }}</span>
+        <v-chip small outlined class="font-weight-bold" style="font-size: 12px;">{{ getSNO(item)+1 }}</v-chip>
       </template>
       <template v-slot:item.status="{ item }">
         <v-chip small :color="
@@ -29,6 +29,23 @@
             <span>{{ a.name }}</span>
           </v-tooltip>
         </div>
+      </template>
+
+      <!-- Purchase -->
+      <template v-slot:item.purchaseDate="{ item }">
+        <span class="caption ml-1">{{ billDate(item.purchaseDate) }}</span>
+      </template>
+      <template v-slot:item.amount="{ item }">
+        <span class="caption font-weight-bold">{{ item.finalRate }}</span>
+      </template>
+      <template v-slot:item.discountAmount="{ item }">
+        <span class="ml-1 caption font-weight-bold">{{ item.discountAmount }}</span>
+      </template>
+      <template v-slot:item.subTotal="{ item }">
+        <span class="caption font-weight-bold">{{ subTotal(item) }}</span>
+      </template>
+      <template v-slot:item.grandTotal="{ item }">
+        <span class="caption font-weight-bold">{{ grandTotal(item) }}</span>
       </template>
     </v-data-table>
     <div class="text-center pt-1">
@@ -72,6 +89,16 @@ export default {
           if(res.data.message) alert(res.data.message)
         })
       }
+    },
+    //purchase
+    billDate(date) {
+      return date.slice(0, 10)
+    },
+    subTotal(item) {
+      return (item.finalRate - item.discountAmount)
+    },
+    grandTotal(item) {
+      return (item.finalRate - (item.discountAmount ? item.discountAmount : 0) + (item.tax ? item.tax : 0))
     }
   },
   computed: {

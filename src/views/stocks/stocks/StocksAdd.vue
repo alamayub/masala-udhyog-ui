@@ -1,5 +1,8 @@
 <template>
   <v-container fluid>
+    <v-overlay :value="overlay">
+      <v-progress-circular indeterminate size="64" />
+    </v-overlay>
     <v-form ref='form' lazy-validation v-model="valid">
       <v-row>
         <v-col cols="12" sm="6" md="4" lg="3">
@@ -65,6 +68,17 @@ export default {
     save() {
       this.$refs.form.validate()  
     }
-  }  
+  },
+  computed: {
+    overlay() {
+      return this.$store.state.isLoading
+    }
+  },
+  created() {
+    this.$store.dispatch({
+      type: 'findAll',
+      url: 'rawMaterial'
+    })
+  } 
 }
 </script>

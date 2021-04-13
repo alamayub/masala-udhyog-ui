@@ -57,8 +57,11 @@ export default {
       return this.$store.state.lists
     }
   },
-  mounted() {
-    this.$store.dispatch('findAll', 'vendorAndCustomer')
+  created() {
+    this.$store.dispatch({
+      type: 'findAll', 
+      url: 'vendorAndCustomer'
+    })
   }
 }
 </script>

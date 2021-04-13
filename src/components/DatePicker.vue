@@ -9,13 +9,17 @@
 <script>
   export default {
     props: {
+      date: String,
       labelName: String
     },
     data: ()=> ({
       menuDate: false,
-      date: new Date().toISOString().substr(0, 10),
       maxDate: new Date().toISOString().substr(0, 10)
-
-    })
+    }),
+    methods: {
+      dateChange() {
+        this.$emit('dateChange', this.date)
+      }
+    }
   }
 </script>
