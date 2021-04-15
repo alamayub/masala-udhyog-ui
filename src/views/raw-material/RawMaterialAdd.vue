@@ -1,8 +1,5 @@
 <template>
   <v-container fluid class="pa-0">
-    <v-overlay :value="overlay">
-      <v-progress-circular indeterminate size="64" />
-    </v-overlay>
     <v-card-title class="px-0 py-2"> Raw Material Creation </v-card-title>
     <v-form ref="form" lazy-validation v-model="valid">
       <v-row>
@@ -43,7 +40,6 @@ import api from '../../helper/api';
 export default {
   data() {
     return {
-      overlay: false,
       valid: true,  
       material: {
         name: '',
@@ -73,16 +69,24 @@ export default {
     async save() {
       if(this.$refs.form.validate()) {
         console.log(this.material)
-        if(confirm('Are you sure want to perferm the action?')) {
-          this.overlay = true
-          await api.post('/rawMaterial/save', this.material)
-          .then( (res) => {
-            console.log(res, 'success')
-            if(res.data.message) alert(res.data.message)
-            this.reset()
-          }).catch( (e) => console.log(e))
-          this.overlay = false
-        }
+        this.$store.dispatch({
+          type: 'save',
+          url: 'rawMaterial',
+          para: this.material
+        }).then( () => {
+          console.log('data added successfully.')
+          this.reset()
+        }).catch( e => console.log(e))
+        // if(confirm('Are you sure want to perferm the action?')) {
+        //   this.overlay = true
+        //   await api.post('/rawMaterial/save', this.material)
+        //   .then( (res) => {
+        //     console.log(res, 'success')
+        //     if(res.data.message) alert(res.data.message)
+        //     this.reset()
+        //   }).catch( (e) => console.log(e))
+        //   this.overlay = false
+        // }
       }
     }
   },

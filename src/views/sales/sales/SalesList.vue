@@ -44,73 +44,22 @@ export default {
         { text: 'Status',   value: 'status', class: 'primary white--text' },
         { text: 'Actions', value: 'actions', sortable: false, class: 'primary white--text' },
       ],
-      salesList: [
-        {
-          sno: 1,
-          billNo: '123',
-          salesDate: '3/26/2021',
-          customer: 'James Frank',
-          subTotal: '10,000',
-          discount: '1,000',
-          total: '9,000',
-          vat: '500',
-          grandTotal: '9,500',
-          status: 'Approved'
-        },
-        {
-          sno: 2,
-          billNo: '124',
-          salesDate: '3/25/2021',
-          customer: 'Sam Doe',
-          subTotal: '9,000',
-          discount: '500',
-          total: '8,500',
-          vat: '0',
-          grandTotal: '8,500',
-          status: 'Approved'
-        },
-        {
-          sno: 3,
-          billNo: '125',
-          salesDate: '3/24/2021',
-          customer: 'Tao Li',
-          subTotal: '10,000',
-          discount: '1,000',
-          total: '9,000',
-          vat: '500',
-          grandTotal: '9,500',
-          status: 'Cancelled'
-        },
-        {
-          sno: 4,
-          billNo: '126',
-          salesDate: '3/23/2021',
-          customer: 'John Doe',
-          subTotal: '5000',
-          discount: '0',
-          total: '5000',
-          vat: '500',
-          grandTotal: '5,500',
-          status: 'Approved'
-        },
-        {
-          sno: 5,
-          billNo: '127',
-          salesDate: '3/22/2021',
-          customer: 'Myra Si',
-          subTotal: '10,000',
-          discount: '1,000',
-          total: '9,000',
-          vat: '500',
-          grandTotal: '9,500',
-          status: 'Cancelled'
-        },
-      ],
       actions: [
         { name: "View" , icon: "mdi-eye", color: 'primary'},
       ],
     }
 
+  },
+  computed: {
+    salesList() {
+      return this.$store.state.lists
+    }
+  },
+  created() {
+    this.$store.dispatch({
+      type: 'findAll',
+      url: 'sales'
+    })
   }
 }
 

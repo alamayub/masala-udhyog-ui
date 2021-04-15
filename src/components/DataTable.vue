@@ -83,11 +83,13 @@ export default {
     async deleteItem(item, a) {
       console.log(item)
       if(confirm('Are you sure, you want to delete this item?')) {
+        this.$store.commit('SET_OVERLAY', true)
         await api.delete(`${a.url}/delete?id=${item.id}`)
         .then( res => {
           this.tbody.splice(this.tbody.indexOf(item), 1)
           if(res.data.message) alert(res.data.message)
-        })
+        }).catch( e => console.log(e))
+        this.$store.commit('SET_OVERLAY', false)
       }
     },
     //purchase
@@ -103,40 +105,9 @@ export default {
   },
   computed: {
     isLoading() {
-      return this.$store.state.isLoading
+      return this.$store.state.table_load
     }
   }
 }
 </script>
 
-
-<!--
-<div style="min-width: 85px;">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn small v-bind="attrs" v-on="on" color="primary" icon @click="gotoDetailPage(item)">
-                <v-icon x-small>mdi-eye</v-icon>
-              </v-btn>
-            </template>
-            <span>View</span>
-          </v-tooltip>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-            <v-btn small v-bind="attrs" v-on="on" color="success" icon @click="print(item)">
-              <v-icon x-small>mdi-pencil</v-icon>
-            </v-btn>
-            </template>
-            <span>Edit</span>
-          </v-tooltip>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-            <v-btn small v-bind="attrs" v-on="on"  color="red" icon @click="print(item)">
-              <v-icon x-small>mdi-delete</v-icon>
-            </v-btn>
-            </template>
-            <span>Delete</span>
-          </v-tooltip>
-        </div>
--->

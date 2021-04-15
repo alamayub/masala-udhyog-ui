@@ -34,7 +34,7 @@ export default {
       { title: 'purchase', icon: 'mdi-cart', to: '/purchase' },
       { title: 'sales', icon: 'mdi-handshake', to: '/sales' },
       { title: 'customers / vendors', icon: 'mdi-card-account-details', to: '/vendors-customers' },
-      { title: 'item info', icon: 'mdi-tag', to: '/inventory/item' },
+      { title: 'item info', icon: 'mdi-tag', to: '/raw-material' },
       { title: 'stocks', icon: 'mdi-package', to: '/stocks' },
       { title: 'expenses', icon: 'mdi-currency-usd', to: '/expenses' },
     ],

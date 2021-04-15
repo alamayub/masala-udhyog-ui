@@ -1,8 +1,5 @@
 <template>
   <v-container fluid>
-    <v-overlay :value="overlay">
-      <v-progress-circular indeterminate size="64" />
-    </v-overlay>
     <v-row>
       <v-col cols="12" sm="6">
         <v-simple-table>
@@ -46,28 +43,23 @@
 </template>
 
 <script>
-import api from '../../../helper/api'
 export default {
-  data: () => ({
-    overlay: false,
-    data: {}
-  }),
   methods: {
     goBack() {
       this.$router.go(-1)
-    },
-    async getVendorOrCustomer() {
-      this.overlay = true
-      await api.get('vendorAndCustomer/findById?id='+this.$route.params.id)
-      .then( res => {
-        console.log(res)
-        this.data = res.data.body
-      }).catch( e => console.log(e))
-      this.overlay = false
+    }
+  },
+  computed: {
+    data() {
+      return this.$store.state.item
     }
   },
   created() {
-    this.getVendorOrCustomer()
+    this.$store.dispatch({
+      type: 'findById', 
+      url: 'vendorAndCustomer',
+      id: this.$route.params.id
+    })
   }
 }
 </script>

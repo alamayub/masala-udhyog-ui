@@ -38,7 +38,7 @@
             </thead>
             <tbody>
             <tr v-for="(row, index) in rows" :key="index">
-              <td><v-autocomplete v-model="row.item" outlined hide-details dense :items="items" @change="isItemAlreadySelected(row,index)" /></td>
+              <td><v-autocomplete v-model="row.particular" outlined hide-details dense :items="items" @change="isItemAlreadySelected(row,index)" /></td>
               <td><v-text-field v-model="row.stock" type="number" class="text-right" dense outlined hide-details readonly /></td>
               <td><v-text-field v-model="row.rate" type="number" class="text-right" dense outlined hide-details @input="getAmount(row)" /></td>
               <td><v-text-field v-model="row.quantity" type="number" class="text-right" dense outlined hide-details @input="getAmount(row)" /></td>
@@ -86,7 +86,7 @@
               <v-icon left size='20'>mdi-cached</v-icon>
               <span>reset</span>
             </v-btn>
-            <v-btn  color="success" >
+            <v-btn  color="success" @click="save">
               <v-icon left size='20'>mdi-content-save-move-outline</v-icon>
               <span>save</span>
             </v-btn>
@@ -111,9 +111,8 @@ export default {
     billType: 'PAN',
     taxTypes: ['Inclusive', 'Exclusive'],
     taxType: 'Exclusive',
-    items: ['Pen', 'Pencil', 'Copy', 'Book', 'Painting Box'],
     rows: [
-      { item: '', stock: null, rate: null, quantity: null, amount: null }
+      { particular: '', stock: null, rate: null, quantity: null, amount: null }
     ]
     ,
     total: null,
@@ -153,7 +152,32 @@ export default {
     reset () {
       this.$refs.form.reset()
     },
+    save() {
+      console.log(this.rows)
+      this.rows.forEach( row => {
+        this.$store.dispatch({
+          type: 'save',
+          url: 'sales',
+          para: row
+        }).then( () => console.log('data added successfully.')).catch( e => console.log(e))
+      });
     }
+  },
+  computed: {
+    items() {
+      let lists = []
+      this.$store.state.lists.forEach( l => {
+        lists.push(l.name)
+      });
+      return lists
+    },
+  },
+  created() {
+    this.$store.dispatch({ 
+      type: 'findAll', 
+      url: 'rawMaterial'
+    })
+  }
 }
 </script>
 

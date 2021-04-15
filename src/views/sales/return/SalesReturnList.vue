@@ -40,63 +40,22 @@ export default {
         { text: 'Status',   value: 'status', class: 'primary white--text' },
         { text: 'Actions', value: 'actions', sortable: false, class: 'primary white--text' },
       ],
-      salesList: [
-        {
-          billNo: 1558,
-          productId: '123',
-          productName: 'Jeera',
-          qty: '5',
-          unit: 'Kg',
-          returnedBy: 'Shyam',
-          purchaseDate:'3/31/2021',
-          status: 'Approved'
-        },
-        {
-          billNo: 2998,
-          productId: '55',
-          productName: 'Dhaniya',
-          qty: '2.5',
-          unit: 'Kg',
-          returnedBy: 'Krishna',
-          purchaseDate:'3/25/2021',
-          status: 'Cancelled'
-        },
-        {
-          billNo:221,
-          productId: '109',
-          productName: 'Mirchi',
-          qty: '9',
-          unit: 'Kg',
-          returnedBy: 'Mohan',
-          purchaseDate:'2/15/2021',
-          status: 'Approved'
-        },
-        {
-          billNo: 225,
-          productId: '661',
-          productName: 'Mustard Oil',
-          qty: '20',
-          unit: 'Ltr',
-          returnedBy: 'James',
-          purchaseDate:'3/8/2021',
-          status: 'Approved'
-        },
-        {
-          billNo: 335,
-          productId: '339',
-          productName: 'Milk',
-          qty: '10',
-          unit: 'Ltr',
-          returnedBy: 'Sam',
-          purchaseDate:'1/1/2021',
-          status: 'Cancelled'
-        },
-      ],
       actions: [
         { name: "View" , icon: "mdi-eye", color: 'primary'},
       ],
     }
 
+  },
+  computed: {
+    salesList() {
+      return this.$store.state.lists
+    }
+  },
+  created() {
+    this.$store.dispatch({
+      type: 'findAll',
+      url: 'sales/return'
+    })
   }
 }
 

@@ -1,15 +1,12 @@
 <template>
   <v-container fluid>
-    <v-overlay :value="overlay">
-      <v-progress-circular indeterminate size="64" />
-    </v-overlay>
     <v-form ref="form" lazy-validation v-model="valid">
       <v-row>
         <v-col cols="12" sm="6" md="4" lg="3">
           <v-text-field v-model="data.id" dense outlined hide-details label="ID" readonly />
         </v-col>
         <v-col cols="12" sm="6" md="4" lg="3">
-          <v-text-field v-model="data.name" dense outlined hide-details label="Full Name*" :rules="[ v => !!v || 'Full name is required' ]" />
+          <v-text-field v-model="data.name" dense outlined hide-details label="Full Name*" :rules="[ v => !!v || 'Full Name is required' ]" />
         </v-col>
         <v-col cols="12" sm="6" md="4" lg="3">
           <v-text-field v-model="data.address" dense outlined hide-details label="Address" />
@@ -46,36 +43,43 @@
 </template>
 
 <script>
-import api from '../../../helper/api'
 export default {
   data: () => ({
-    overlay: false,
-    data: {},
     valid: true,
     emailRules: [
       v => !!v || 'E-mail is required',
       v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
     ]
   }),
+  computed: {
+    data() {
+      return this.$store.state.item
+    }
+  },
   methods: {
-    async getVendorOrCustomer() {
-      this.overlay = true
-      await api.get('vendorAndCustomer/findById?id='+this.$route.params.id)
-      .then( res => {
-        console.log(res)
-        this.data = res.data.body
-      }).catch( e => console.log(e))
-      this.overlay = false
-    },
     async updateVendorAndCustomer() {
       console.log(this.data)
+      if(this.$refs.form.validate()) {
+        this.$store.dispatch({
+          type: 'update',
+          url: 'vendorAndCustomer',
+          para: this.data
+        }).then( () => {
+          console.log('vendor and customer updated successfully.')
+          this.goBack()
+        }).catch( e => console.log(e))
+      }
     },
     goBack() {
       this.$router.go(-1)
     }
   },
   created() {
-    this.getVendorOrCustomer()
+    this.$store.dispatch({
+      type: 'findById', 
+      url: 'vendorAndCustomer',
+      id: this.$route.params.id
+    })
   }
 }
 </script>

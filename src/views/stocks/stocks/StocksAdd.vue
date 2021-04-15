@@ -1,8 +1,5 @@
 <template>
   <v-container fluid>
-    <v-overlay :value="overlay">
-      <v-progress-circular indeterminate size="64" />
-    </v-overlay>
     <v-form ref='form' lazy-validation v-model="valid">
       <v-row>
         <v-col cols="12" sm="6" md="4" lg="3">
@@ -46,7 +43,7 @@
 </template>
 
 <script>
-import api from '../../../helper/api'
+// import api from '../../../helper/api'
 export default {
   data: () => ({
     valid: true,  
@@ -69,13 +66,21 @@ export default {
     },
     async save() {
       if(this.$refs.form.validate()) {
-        this.$store.commit('SET_IS_LOADING', true)
-        await api.post('finished/product/stock/save', this.stock).then( res => {
-          if(res.data.message) alert(res.data.message)
-          console.log(res)
+        this.$store.dispatch({
+          type: 'save',
+          url: 'finished/product/stock',
+          para: this.stock
+        }).then( () => {
+          console.log('data added successfully.')
           this.reset()
         }).catch( e => console.log(e))
-        this.$store.commit('SET_IS_LOADING', false)
+        // this.$store.commit('SET_IS_LOADING', true)
+        // await api.post('finished/product/stock/save', this.stock).then( res => {
+        //   if(res.data.message) alert(res.data.message)
+        //   console.log(res)
+        //   this.reset()
+        // }).catch( e => console.log(e))
+        // this.$store.commit('SET_IS_LOADING', false)
       }  
     },
     getLists() {
@@ -83,11 +88,6 @@ export default {
         this.lists.push(li.name)
       });
     }
-  },
-  computed: {
-    overlay() {
-      return this.$store.state.isLoading
-    },
   },
   created() {
     this.$store.dispatch({

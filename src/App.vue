@@ -1,7 +1,10 @@
 <template>
   <v-app>
+    <v-overlay :value="overlay">
+      <v-progress-circular indeterminate size="64" />
+    </v-overlay>
     <v-main>
-      <router-view />
+      <router-view :key="$route.path" />
     </v-main>
   </v-app>
 </template>
@@ -9,6 +12,11 @@
 <script>
 export default {
   name: 'App',
+  computed: {
+    overlay() {
+      return this.$store.state.overlay
+    }
+  }
 };
 </script>
 

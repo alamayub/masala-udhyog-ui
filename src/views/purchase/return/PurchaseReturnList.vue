@@ -16,7 +16,7 @@
       </v-col>
       <v-col cols="12">
         <v-divider></v-divider>
-        <DataTable :theader="header" :tbody="body" :actions="actions"></DataTable>
+        <DataTable :theader="header" :tbody="lists" :actions="actions"></DataTable>
       </v-col>
     </v-row>
   </v-container>
@@ -43,57 +43,22 @@ export default {
       { text: 'Grand Total (Rs.)', value: 'grandTotal', class: 'primary white--text'},
       { text: 'Actions', value: 'actions', sortable: false , class: 'primary white--text'},
     ],
-    body: [
-      {
-        sno: 4,
-        purchaseBillNo: '077-0004',
-        returnDate: '2077-12-11',
-        vendor: 'Bibek chaurrasiya',
-        subTotal: '10,000',
-        discount: '1,000',
-        total: '9,000',
-        vat: '500',
-        grandTotal: '9,500',
-      },
-      {
-        sno: 3,
-        purchaseBillNo: '077-0003',
-        returnDate: '2077-12-11',
-        vendor: 'Ayub Alam',
-        subTotal: '10,000',
-        discount: '1,000',
-        total: '9,000',
-        vat: '500',
-        grandTotal: '9,500',
-      },
-      {
-        sno: 2,
-        purchaseBillNo: '077-0002',
-        returnDate: '2077-12-11',
-        vendor: 'Rajiv Sing',
-        subTotal: '10,000',
-        discount: '1,000',
-        total: '9,000',
-        vat: '500',
-        grandTotal: '9,500',
-      },
-      {
-        sno: 1,
-        purchaseBillNo: '077-0001',
-        returnDate: '2077-12-11',
-        vendor: 'Ram chatur singh',
-        subTotal: '10,000',
-        discount: '1,000',
-        total: '9,000',
-        vat: '500',
-        grandTotal: '9,500',
-      }
-    ],
     actions: [
       { name: 'View', icon: 'mdi-eye', color: 'primary' },
       { name: 'Canceled', icon: 'mdi-close', color: 'red'},
       { name: 'Print', icon: 'mdi-printer', color: 'secondary'}
     ]
-  })
+  }),
+  computed: {
+    lists() {
+      return this.$store.state.lists
+    },
+  },
+  created() {
+    this.$store.dispatch({
+      type: 'findAll',
+      url: 'purchase/return'
+    })
+  }
 }
 </script>

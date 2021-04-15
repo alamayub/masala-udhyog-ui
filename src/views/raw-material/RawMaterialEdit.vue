@@ -1,8 +1,5 @@
 <template>
   <v-container fluid class="pa-0">
-    <v-overlay :value="overlay">
-      <v-progress-circular indeterminate size="64" />
-    </v-overlay>
     <v-card-title class="px-0 py-2"> Raw Material Updation </v-card-title>
     <v-form ref="form" lazy-validation v-model="valid">
       <v-row>
@@ -35,13 +32,10 @@
 </template>
 
 <script>
-import api from '../../helper/api'
 export default {
   data() {
     return {
-      overlay: false,
       valid: true,  
-      material: {}
     };
   },
   methods: {
@@ -50,31 +44,28 @@ export default {
     },
     async update() {
       if(this.$refs.form.validate()) {
-        if(confirm('Are you sure want to perform the action?')) {
-          this.overlay = true
-          await api.put('/rawMaterial/update', this.material)
-          .then( (res) => {
-            console.log(res)
-            console.log(res.data.message)
-            if(res.data.message) alert(res.data.message)
-            this.goBack()
-          }).catch( (e) => console.log(e))
-          this.overlay = false
-        }
+        this.$store.dispatch({
+          type: 'update',
+          url: 'rawMaterial',
+          para: this.material
+        }).then( () => {
+          console.log('updated successfully')
+          this.goBack()
+        }).catch( e => console.log(e))
       }
-    },
-    async getItem() {
-      this.overlay = true
-      await api.get('/rawMaterial/findById?id='+this.$route.params.id)
-      .then( (res) => {
-        console.log(res)
-        this.material = res.data.body
-      }).catch( (e) => console.log(e))  
-      this.overlay = false
+    }
+  },
+  computed: {
+    material() {
+      return this.$store.state.item
     }
   },
   created() {
-    this.getItem()
+    this.$store.dispatch({
+      type: 'findById',
+      url: 'rawMaterial',
+      id: this.$route.params.id
+    })
   }
 };
 </script>

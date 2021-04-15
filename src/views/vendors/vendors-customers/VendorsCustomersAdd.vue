@@ -63,7 +63,6 @@
 </template>
 
 <script>
-import api from  '../../../helper/api'
 export default {
   data: () => ({
     overlay: false,
@@ -93,15 +92,23 @@ export default {
     },
     async addVendorAndCustomer () {
       if(this.$refs.form.validate()) {
-        if(confirm('Are you sure want to perform the action?')) {
-          this.overlay = true
-          await api.post('/vendorAndCustomer/save', this.user)
-          .then( res => {
-            if(res.data.message) alert(res.data.message)
-            this.reset()
-          }).catch( e => console.log(e))
-          this.overlay = false
-        }
+        this.$store.dispatch({
+          type: 'save', 
+          url: 'vendorAndCustomer',
+          para: this.user
+        }).then( () => {
+          console.log('data added successfully.')
+          this.reset()
+        }).catch( e => console.log(e))
+        // if(confirm('Are you sure want to perform the action?')) {
+        //   this.overlay = true
+        //   await api.post('/vendorAndCustomer/save', this.user)
+        //   .then( res => {
+        //     if(res.data.message) alert(res.data.message)
+        //     this.reset()
+        //   }).catch( e => console.log(e))
+        //   this.overlay = false
+        // }
       }
     },
     reset () {

@@ -23,7 +23,7 @@
             </thead>
             <tbody>
             <tr v-for="(row, i) in rows" :key="i">
-              <td class="my-1"><v-text-field v-model="row.item" dense outlined hide-details /></td>
+              <td class="my-1"><v-text-field v-model="row.particular" dense outlined hide-details /></td>
               <td><v-text-field v-model="row.rate" type="number" dense outlined hide-details /></td>
               <td><v-text-field v-model="row.quantity" type="number" dense outlined hide-details @input="getAmount(row)" /></td>
               <td><v-text-field v-model="row.amount" type="number" readonly dense outlined hide-details /></td>
@@ -58,7 +58,7 @@
         <v-card elevation='0' class="pa-0">
           <v-card-actions class="pa-0">
             <v-spacer></v-spacer>
-            <v-btn color="primary">
+            <v-btn color="primary" @click="goBack">
               <v-icon left size='20'>mdi-chevron-left</v-icon>
               <span>back</span>
             </v-btn>
@@ -66,7 +66,7 @@
               <v-icon left size='20'>mdi-cached</v-icon>
               <span>reset</span>
             </v-btn>
-            <v-btn color="success">
+            <v-btn color="success" @click="save">
               <v-icon left size='20'>mdi-content-save-move-outline</v-icon>
               <span>save</span>
             </v-btn>
@@ -87,7 +87,7 @@ export default {
   },
   data: () => ({
     rows: [
-      { item: '', rate: null, quantity: null, amount: null }
+      { particular: '', rate: null, quantity: null, amount: null, date: new Date().toISOString().substr(0, 10) }
     ],
     total: 0
   }),
@@ -118,6 +118,19 @@ export default {
       });
       console.log(this.total)
     },
+    goBack() {
+      this.$router.go(-1)
+    },
+    save() {
+      console.log(this.rows)
+      this.rows.forEach( row => {
+        this.$store.dispatch({
+          type: 'save',
+          url: 'expenses',
+          para: row
+        }).then( () => console.log('data added successfully.')).catch( e => console.log(e))
+      });
+    }
   }
 }
 </script>
