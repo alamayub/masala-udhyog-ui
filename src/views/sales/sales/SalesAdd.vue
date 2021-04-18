@@ -2,25 +2,16 @@
   <v-container class="mt-3" fluid>
     <v-row>
       <v-col cols="12" sm="6" md="4">
-        <v-select v-model="customer" :items="customers" label="Customer" outlined dense hide-details></v-select>
-      </v-col>
-      <v-col cols="12" sm="3" md="2">
-        <v-select v-model="billType" :items="billTypes" label="Bill Type" outlined dense hide-details></v-select>
+        <v-select v-model="customerName" :items="customers" label="Customer" outlined dense hide-details></v-select>
       </v-col>
       <v-spacer></v-spacer>
       <v-col cols="12" sm="3" md="2">
-        <v-select v-model="taxType" :items="taxTypes" label="Tax Inclusive/Exclusive" hide-details outlined dense></v-select>
-      </v-col>
-      <v-col cols="12" sm="3" md="2">
         <v-menu v-model="menu" transition="scale-transition" offset-y max-width="290px" min-width="auto">
           <template v-slot:activator="{ on, attrs }">
-            <v-text-field hide-details v-model="date" label="From Date" color="primary" prepend-inner-icon="mdi-calendar" outlined dense readonly v-bind="attrs" v-on="on" />
+            <v-text-field hide-details v-model="createdDate" label="From Date" color="primary" prepend-inner-icon="mdi-calendar" outlined dense readonly v-bind="attrs" v-on="on" />
           </template>
-          <v-date-picker v-model="date" color="primary" :max="maxDate" scrollable />
+          <v-date-picker v-model="createdDate" color="primary" :max="maxDate" scrollable />
         </v-menu>
-      </v-col>
-      <v-col cols="12" sm="3" md="2">
-        <v-text-field label="Bill No" value="2077-00041" readonly hide-details outlined dense />
       </v-col>
     </v-row>
     <v-row>
@@ -28,32 +19,34 @@
         <v-simple-table fixed-header height="200" class="mt-3" style="border: 1px solid grey">
           <template v-slot:default>
             <thead>
-            <tr>
-              <th id="item" class="primary white--text text-center">Item</th>
-              <th id="stock" class="primary white--text text-center" style="width: 200px">Available Stock</th>
-              <th id="rate" class="primary white--text text-center" style="width: 200px">Rate (Rs.)</th>
-              <th id="quantity" class="primary white--text text-center" style="width: 200px">Quantity</th>
-              <th id="amount" class="primary white--text text-center" style="width: 200px">Amount (Rs.)</th>
-              <th id="action" class="primary" style="width: 10px">
-                <v-btn icon text color='white' @click="cloneLastTr">
-                  <v-icon size='20'>mdi-plus</v-icon>
-                </v-btn>
-              </th>
-            </tr>
+              <tr>
+                <th id="item" class="primary white--text text-center" style="width: 200px">Item</th>
+                <th id="stock" class="primary white--text text-center" style="width: 200px">Available Stock</th>
+                <th id="rate" class="primary white--text text-center" style="width: 200px">Rate (Rs.)</th>
+                <th id="unit" class="primary white--text text-center" style="width: 100px;">Unit</th>
+                <th id="quantity" class="primary white--text text-center" style="width: 200px">Quantity</th>
+                <th id="amount" class="primary white--text text-center" style="width: 200px">Amount (Rs.)</th>
+                <th id="action" class="primary" style="width: 10px">
+                  <v-btn icon text color='white' @click="cloneLastTr">
+                    <v-icon size='20'>mdi-plus</v-icon>
+                  </v-btn>
+                </th>
+              </tr>
             </thead>
             <tbody>
-            <tr v-for="(row, index) in rows" :key="index">
-              <td><v-autocomplete v-model="row.particular" outlined hide-details dense :items="items" @change="isItemAlreadySelected(row,index)" /></td>
-              <td><v-text-field v-model="row.stock" type="number" class="text-right" dense outlined hide-details readonly /></td>
-              <td><v-text-field v-model="row.rate" type="number" class="text-right" dense outlined hide-details @input="getAmount(row)" /></td>
-              <td><v-text-field v-model="row.quantity" type="number" class="text-right" dense outlined hide-details @input="getAmount(row)" /></td>
-              <td><v-text-field v-model="row.amount" type="number" class="text-right" dense outlined hide-details readonly /></td>
-              <td>
-                <v-btn class='red' dark icon @click="removeCurrentRow" v-show="rows.length > 1">
-                  <v-icon size='20'>mdi-delete</v-icon>
-                </v-btn>
-              </td>
-            </tr>
+              <tr v-for="(row, index) in rows" :key="index">
+                <td><v-autocomplete v-model="row.particular" outlined hide-details dense :items="items" @change="isItemAlreadySelected(row,index)" /></td>
+                <td><v-text-field v-model="row.stock" type="number" class="text-right" dense outlined hide-details readonly /></td>
+                <td><v-text-field v-model="row.rate" type="number" class="text-right" dense outlined hide-details @input="getAmount(row)" /></td>
+                <td><v-text-field v-model="row.unit" label="Unit" class="text-right" dense outlined hide-details /></td>
+                <td><v-text-field v-model="row.quantity" type="number" class="text-right" dense outlined hide-details @input="getAmount(row)" /></td>
+                <td><v-text-field v-model="row.amount" type="number" class="text-right" dense outlined hide-details readonly /></td>
+                <td>
+                  <v-btn class='red' dark icon @click="removeCurrentRow" v-show="rows.length > 1">
+                    <v-icon size='20'>mdi-delete</v-icon>
+                  </v-btn>
+                </td>
+              </tr>
             </tbody>
           </template>
         </v-simple-table>
@@ -75,11 +68,11 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-textarea outlined label="Remarks (If any)" rows="2"></v-textarea>
+        <v-textarea v-model="remarks" outlined label="Remarks (If any)" hide-details></v-textarea>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols='12'>
+      <v-col cols='12' class="pt-0">
         <v-card elevation='0' class="px-0">
           <v-card-actions class="px-0">
             <v-spacer></v-spacer>
@@ -103,21 +96,18 @@
 </template>
 
 <script>
+import api from '../../../helper/api'
 export default {
   data: () => ({
-    customers: ['Medilanee Pvt. Ltd', 'Natural Pvt. Ltd', 'Clark Pvt.Ltd', 'Himalayan Nepal pvt. Ltd'],
-    customer: null,
-    billTypes: ['VAT', 'PAN'],
-    billType: 'PAN',
-    taxTypes: ['Inclusive', 'Exclusive'],
-    taxType: 'Exclusive',
+    customers: [],
+    customerName: null,
     menu: false,
-    date: new Date().toISOString().substr(0, 10),
     maxDate: new Date().toISOString().substr(0, 10),
+    createdDate: new Date().toISOString().substr(0, 10),
     rows: [
-      { particular: '', stock: null, rate: null, quantity: null, amount: null, createdDate: new Date().toISOString().substr(0, 10) }
-    ]
-    ,
+      { particular: null, stock: null, rate: null, quantity: null, unit: null, amount: null }
+    ],
+    remarks: null,
     total: null,
     discount: null,
     tax: null,
@@ -125,7 +115,7 @@ export default {
   }),
   methods:{
     cloneLastTr() {
-      this.rows.push({ particular: '', stock: null, rate: null, quantity: null, amount: null, createdDate: this.date })
+      this.rows.push({ particular: null, stock: null, rate: null, quantity: null, unit: null, amount: null })
     },
     removeCurrentRow(index) {
       this.rows.splice(index, 1)
@@ -161,25 +151,42 @@ export default {
         this.$store.dispatch({
           type: 'save',
           url: 'sales',
-          para: row
-        }).then( () => console.log('data added successfully.')).catch( e => console.log(e))
+          para: { 
+            billNumber: Math.floor(Math.random() * 100000),
+            particular: row.particular, 
+            rate: row.rate, 
+            quantity: row.quantity, 
+            unit: row.unit,
+            customerName: this.customerName, 
+            createdDate: this.createdDate, 
+            remarks: this.remarks 
+          }
+        }).then( () => {
+          console.log('data added successfully.')
+          this.rows =[
+            { particular: null, stock: null, rate: null, quantity: null, unit: null, amount: null }
+          ]
+          this.customerName = null
+          this.createdDate =  new Date().toISOString().substr(0, 10)
+        }).catch( e => console.log(e))
       });
+    },
+    async getData() {
+      await api.post('vendorAndCustomer/findAll').then( docs => {
+        docs.data.body.forEach(doc => this.customers.push(doc.name));
+      }).catch( e => console.log(e))
+      this.$store.dispatch({ type: 'findAll', url: 'rawMaterial' })
     }
   },
   computed: {
     items() {
       let lists = []
-      this.$store.state.lists.forEach( l => {
-        lists.push(l.name)
-      });
+      this.$store.state.lists.forEach( l => lists.push(l.name));
       return lists
     },
   },
   created() {
-    this.$store.dispatch({ 
-      type: 'findAll', 
-      url: 'rawMaterial'
-    })
+    this.getData()
   }
 }
 </script>

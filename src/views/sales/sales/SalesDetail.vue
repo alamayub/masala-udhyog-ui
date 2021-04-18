@@ -9,17 +9,13 @@
             <v-simple-table>
               <template v-slot:default>
                 <tbody>
-                <tr><td>Customer: </td><td><b>James Frank</b></td></tr>
-                <tr><td>Bill Type: </td><td><b>VAT</b></td></tr>
-                <tr><td>Tax: </td><td><b>Inclusive</b></td></tr>
-                <tr><td>Bill Date: </td><td><b>3/31/2021</b></td></tr>
-                <tr><td>Sales Bill No.: </td><td><b>551</b></td></tr>
-                <tr><td>Amount(Rs.)</td><td>10,000</td></tr>
-                <tr><td>Discount(Rs.)</td><td>1,000</td></tr>
-                <tr><td>Sub Total(Rs.)</td><td>9,000</td></tr>
-                <tr><td>VAT(Rs.)</td><td>1,000</td></tr>
-                <tr><td>Grand Total(Rs.)</td><td>10,000</td></tr>
-                <tr><td>Remarks: </td><td><b></b></td></tr>
+                <tr><td>Customer: </td><td><b>{{ item.customerName }}</b></td></tr>
+                <tr><td>Bill Date: </td><td><b>{{ item.createdDate }}</b></td></tr>
+                <tr><td>Sales Bill No.: </td><td><b>{{ item.billNumber }}</b></td></tr>
+                <tr><td>Rate: </td><td><b>{{ item.rate }}</b></td></tr>
+                <tr><td>Quantity: </td><td><b>{{ item.quantity }}</b></td></tr>
+                <tr><td>Amount(Rs.)</td><td>{{ item.rate * item.quantity }}</td></tr>
+                <tr><td>Remarks: </td><td><b>{{ item.remarks }}</b></td></tr>
                 </tbody>
               </template>
             </v-simple-table>
@@ -114,10 +110,17 @@ export default {
       }
     ]
   }),
-  methods: {
-    print(item) {
-      console.log(item)
+  computed: {
+    item() {
+      return this.$store.state.item
     }
+  },
+  created() {
+    this.$store.dispatch({
+      type: 'findById', 
+      url: 'sales',
+      id: this.$route.params.id
+    })
   }
 }
 </script>

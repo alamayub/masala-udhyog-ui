@@ -5,26 +5,21 @@
       <v-tab>Items</v-tab>
       <v-tab-item>
         <v-row>
-          <v-col cols="12" sm="6">
+          <v-col cols="12">
             <v-simple-table>
               <template v-slot:default>
                 <tbody>
-                <tr><td>Vendor: </td><td><b>Ayub Alam</b></td></tr>
-                <tr><td>Bill Type: </td><td><b>VAT</b></td></tr>
-                <tr><td>Tax: </td><td><b>Inclusive</b></td></tr>
-                <tr><td>Bill Date: </td><td><b>2077-12-12</b></td></tr>
-                <tr><td>Bill No.: </td><td><b>2077-12-24</b></td></tr>
-                <tr><td>Total Amount (Rs.)</td><td>10,000</td></tr>
-                <tr><td>Discount Amount (Rs.)</td><td>1,000</td></tr>
-                <tr><td>Sub Total Amount (Rs.)</td><td>9,000</td></tr>
-                <tr><td>TAX Amount (Rs.)</td><td>1,000</td></tr>
-                <tr><td>Grand Total Amount (Rs.)</td><td>10,000</td></tr>
-                <tr><td>Remarks: </td><td><b></b></td></tr>
+                <tr><td>Bill Date: </td><td><b>{{ item.purchaseDate }}</b></td></tr>
+                <tr><td>Rate (Rs.)</td><td>{{ item.finalRate }}</td></tr>
+                <tr><td>Quantity</td><td>{{ item.quantity }}</td></tr>
+                <tr><td>Discount Amount (Rs.)</td><td>{{ item.discountAmount }}</td></tr>
+                <tr><td>Total Amount (Rs.)</td><td>{{ getAmount() }}</td></tr>
+                <tr><td>Remarks: </td><td><b>{{ item.remarks }}</b></td></tr>
                 </tbody>
               </template>
             </v-simple-table>
           </v-col>
-          <v-col cols="12" sm="6">
+          <!-- <v-col cols="12" sm="6">
             <v-simple-table>
               <template v-slot:default>
                 <tbody>
@@ -35,7 +30,7 @@
                 </tbody>
               </template>
             </v-simple-table>
-          </v-col>
+          </v-col> -->
         </v-row>
       </v-tab-item>
       <v-tab-item>
@@ -58,6 +53,11 @@ import DataTable from "@/components/DataTable";
 export default {
   components: {
     DataTable
+  },
+  computed: {
+    item() {
+      return this.$store.state.item
+    }
   },
   data:() => ({
     header: [
@@ -102,7 +102,17 @@ export default {
   methods: {
     goBack() {
       this.$router.go(-1)
+    },
+    getAmount() {
+      return ( this.item.finalRate * this.item.quantity ) - this.item.discountAmount
     }
+  },
+  created() {
+    this.$store.dispatch({
+      type: 'findById',
+      url: 'purchase',
+      id: this.$route.params.id
+    })
   }
 }
 </script>

@@ -47,14 +47,12 @@ export default {
     toDate: new Date().toISOString().substr(0, 10),
     header: [
       { text: 'S.N.', align: 'start', sortable: true, value: 'sno', class: 'primary white--text' },
-      // { text: 'Purchase Bill No.', value: 'id', class: 'primary white--text' },
       { text: 'Particular', value: 'particular', class: 'primary white--text' },
       { text: 'Bill Date', value: 'purchaseDate' , class: 'primary white--text'},
-      { text: 'Vendor', value: 'vendor', class: 'primary white--text' },
+      { text: 'Rate (Rs.)', align: 'right', value: 'finalRate', class: 'primary white--text'},
+      { text: 'Quantity', align: 'right', value: 'quantity', class: 'primary white--text'},
+      { text: 'Doscount (Rs.)', align: 'right', value: 'discountAmount', class: 'primary white--text'},
       { text: 'Amount (Rs.)', align: 'right', value: 'amount', class: 'primary white--text' },
-      { text: 'Discount (Rs.)', align: 'right', value: 'discountAmount', class: 'primary white--text'},
-      { text: 'Sub Total (Rs.)', align: 'right', value: 'subTotal', class: 'primary white--text'},
-      { text: 'Grand Total (Rs.)', align: 'right', value: 'grandTotal', class: 'primary white--text'},
       { text: 'Actions', value: 'actions', sortable: false , class: 'primary white--text'},
     ],
     actions: [

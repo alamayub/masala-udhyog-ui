@@ -35,18 +35,19 @@
       <template v-slot:item.purchaseDate="{ item }">
         <span class="caption ml-1">{{ item.purchaseDate }}</span>
       </template>
-      <!-- <template v-slot:item.amount="{ item }">
-        <span class="caption font-weight-bold">{{ item.finalRate }}</span>
-      </template> -->
+      <template v-slot:item.billDate="{ item }">
+        <span class="caption font-weight-bold">{{ item.createdDate }}</span>
+      </template>
+      <template v-slot:item.salesAmount="{ item }">
+        <span class="caption font-weight-bold">{{ salesAmount(item) }}</span>
+      </template>
+      <template v-slot:item.amount="{ item }">
+        <span class="caption font-weight-bold">{{ getAmount(item) }}</span>
+      </template>
       <template v-slot:item.discountAmount="{ item }">
         <span class="ml-1 caption font-weight-bold">{{ item.discountAmount }}</span>
       </template>
-      <template v-slot:item.subTotal="{ item }">
-        <span class="caption font-weight-bold">{{ subTotal(item) }}</span>
-      </template>
-      <template v-slot:item.grandTotal="{ item }">
-        <span class="caption font-weight-bold">{{ grandTotal(item) }}</span>
-      </template>
+     
     </v-data-table>
     <div class="text-center pt-1">
       <v-pagination v-model="page" :length="pageCount"></v-pagination>
@@ -92,15 +93,11 @@ export default {
         this.$store.commit('SET_OVERLAY', false)
       }
     },
-    //purchase
-    billDate(date) {
-      return date.slice(0, 10)
+    getAmount(item) {
+      return (item.finalRate * item.quantity) - item.discountAmount
     },
-    subTotal(item) {
-      return (item.finalRate - item.discountAmount)
-    },
-    grandTotal(item) {
-      return (item.finalRate - (item.discountAmount ? item.discountAmount : 0) + (item.tax ? item.tax : 0))
+    salesAmount(item) {
+      return item.rate * item.quantity
     }
   },
   computed: {
