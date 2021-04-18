@@ -1,58 +1,77 @@
 <template>
-  <v-card class="elevation-0">
-    <v-card-title class="pa-0 my-3">
-      <v-text-field v-model="search" outlined dense append-icon="mdi-magnify" label="Search" hide-details />
-    </v-card-title>
-    <v-data-table height="288" :headers="theader" :items="tbody == null ? [] : tbody" :search="search" :loading="isLoading" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer @page-count="pageCount = $event">
-      <template v-slot:item.sno="{ item }">
-        <v-chip small outlined class="font-weight-bold" style="font-size: 12px;">{{ getSNO(item)+1 }}</v-chip>
-      </template>
-      <template v-slot:item.status="{ item }">
-        <v-chip small :color="
-          item.enable === true ? 'success'
-          : item.enable === false ? 'error'
-          : item.status === 'Approved' ? 'success'
-          : item.status === 'Canceled' ? 'error'
-          : item.status === 'Pending' ? 'warning' : 'secondary' "
-          dark>
-          {{ item.status }} 
-        </v-chip>
-      </template>
-      <template v-slot:item.actions="{ item }">
-        <div style="min-width: 5px;">
-          <v-tooltip bottom v-for="(a, index) in actions" :key="index">
-            <template v-slot:activator="{ on, attrs }">
-            <v-btn small v-bind="attrs" v-on="on" :color="a.color" icon @click="a.name === 'View' ? gotoDetailPage(item) :a.name === 'Edit' ? gotoEditPage(item) : deleteItem(item, a) ">
-              <v-icon x-small>{{ a.icon }}</v-icon>
-            </v-btn>
-            </template>
-            <span>{{ a.name }}</span>
-          </v-tooltip>
-        </div>
-      </template>
+  <div>
+    <v-card class="elevation-0">
+      <v-card-title class="pa-0 my-3">
+        <v-text-field v-model="search" outlined dense append-icon="mdi-magnify" label="Search" hide-details />
+      </v-card-title>
+      <v-data-table height="288" :headers="theader" :items="tbody == null ? [] : tbody" :search="search" :loading="isLoading" :page.sync="page" :items-per-page="itemsPerPage" hide-default-footer @page-count="pageCount = $event">
+        <template v-slot:item.sno="{ item }">
+          <v-chip small outlined class="font-weight-bold" style="font-size: 12px;">{{ getSNO(item)+1 }}</v-chip>
+        </template>
+        <template v-slot:item.status="{ item }">
+          <v-chip small :color="
+            item.enable === true ? 'success'
+            : item.enable === false ? 'error'
+            : item.status === 'Approved' ? 'success'
+            : item.status === 'Canceled' ? 'error'
+            : item.status === 'Pending' ? 'warning' : 'secondary' "
+            dark>
+            {{ item.status }} 
+          </v-chip>
+        </template>
+        <template v-slot:item.actions="{ item }">
+          <div style="min-width: 5px;">
+            <v-tooltip bottom v-for="(a, index) in actions" :key="index">
+              <template v-slot:activator="{ on, attrs }">
+              <v-btn small v-bind="attrs" v-on="on" :color="a.color" icon 
+                @click="a.name === 'View' ? gotoDetailPage(item) :a.name === 'Edit' 
+                ? gotoEditPage(item) : a.name == 'Delete' ? deleteItem(item, a)
+                : a.name == 'Print' ? print(item) : () => console.log(item) ">
+                <v-icon x-small>{{ a.icon }}</v-icon>
+              </v-btn>
+              </template>
+              <span>{{ a.name }}</span>
+            </v-tooltip>
+          </div>
+        </template>
 
-      <!-- Purchase -->
-      <template v-slot:item.purchaseDate="{ item }">
-        <span class="caption ml-1">{{ item.purchaseDate }}</span>
-      </template>
-      <template v-slot:item.billDate="{ item }">
-        <span class="caption font-weight-bold">{{ item.createdDate }}</span>
-      </template>
-      <template v-slot:item.salesAmount="{ item }">
-        <span class="caption font-weight-bold">{{ salesAmount(item) }}</span>
-      </template>
-      <template v-slot:item.amount="{ item }">
-        <span class="caption font-weight-bold">{{ getAmount(item) }}</span>
-      </template>
-      <template v-slot:item.discountAmount="{ item }">
-        <span class="ml-1 caption font-weight-bold">{{ item.discountAmount }}</span>
-      </template>
-     
-    </v-data-table>
-    <div class="text-center pt-1">
-      <v-pagination v-model="page" :length="pageCount"></v-pagination>
-    </div>
-  </v-card>  
+        <!-- Purchase -->
+        <template v-slot:item.purchaseDate="{ item }">
+          <span class="caption ml-1">{{ item.purchaseDate }}</span>
+        </template>
+        <template v-slot:item.billDate="{ item }">
+          <span class="caption font-weight-bold">{{ item.createdDate }}</span>
+        </template>
+        <template v-slot:item.salesAmount="{ item }">
+          <span class="caption font-weight-bold">{{ salesAmount(item) }}</span>
+        </template>
+        <template v-slot:item.amount="{ item }">
+          <span class="caption font-weight-bold">{{ getAmount(item) }}</span>
+        </template>
+        <template v-slot:item.discountAmount="{ item }">
+          <span class="ml-1 caption font-weight-bold">{{ item.discountAmount }}</span>
+        </template>
+      
+      </v-data-table>
+      <div class="text-center pt-1">
+        <v-pagination v-model="page" :length="pageCount"></v-pagination>
+      </div>
+    </v-card> 
+
+    <!-- <table style="width: 100%">
+      <tr>
+        <th id="sno">S.No</th>
+        <th id="name">Particular</th>
+        <th id="rate">Rate</th>
+        <th id="quantity">Quantity</th>
+        <th id="amount">Total</th>
+      </tr>
+      <tr>
+        <td>1.</td>
+        <td>{{  }}</td>
+      </tr>
+    </table> -->
+  </div> 
 </template>
 
 <script>
@@ -92,6 +111,9 @@ export default {
         }).catch( e => console.log(e))
         this.$store.commit('SET_OVERLAY', false)
       }
+    },
+    print(item) {
+      console.log(item)
     },
     getAmount(item) {
       return (item.finalRate * item.quantity) - item.discountAmount
