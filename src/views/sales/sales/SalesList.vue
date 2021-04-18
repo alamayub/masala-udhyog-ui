@@ -2,10 +2,20 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" sm="4" md="3" lg="2" class="pb-0">
-        <DatePicker labelName="From"/>
+        <v-menu v-model="menuFromDate" transition="scale-transition" offset-y max-width="290px" min-width="auto">
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field hide-details v-model="fromDate" label="From Date" color="primary" prepend-inner-icon="mdi-calendar" outlined dense readonly v-bind="attrs" v-on="on" />
+          </template>
+          <v-date-picker @change="dateValidate" v-model="fromDate" color="primary" :max="maxDate" scrollable />
+        </v-menu>
       </v-col>
       <v-col cols="12" sm="4" md="3" lg="2" class="pb-0">
-        <DatePicker labelName="To" />
+        <v-menu v-model="menuToDate" transition="scale-transition" offset-y max-width="290px" min-width="auto">
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field hide-details v-model="toDate" label="To Date" color="primary" prepend-inner-icon="mdi-calendar" outlined dense readonly v-bind="attrs" v-on="on" />
+          </template>
+          <v-date-picker @change="dateValidate" v-model="toDate" color="primary" :max="maxDate" scrollable />
+        </v-menu>
       </v-col>
       <v-spacer />
       <v-col cols='12' sm='3' class="text-right">
@@ -24,13 +34,17 @@
 
 <script>
 import DataTable from "../../../components/DataTable";
-import DatePicker from "@/components/DatePicker";
 export default {
   components: {
-    DataTable,DatePicker,
+    DataTable,
   },
   data () {
-    return{
+    return {
+      menuFromDate: false,
+      maxDate: new Date().toISOString().substr(0, 10),
+      fromDate: new Date().toISOString().substr(0, 10),
+      menuToDate: false,
+      toDate: new Date().toISOString().substr(0, 10),
       headers: [
         { text: 'S.No',   value: 'sno', class: 'primary white--text' },
         { text: 'Sales Bill No',  value: 'billNo', class: 'primary white--text' },
@@ -45,7 +59,8 @@ export default {
         { text: 'Actions', value: 'actions', sortable: false, class: 'primary white--text' },
       ],
       actions: [
-        { name: "View" , icon: "mdi-eye", color: 'primary'},
+        { name: "View" , icon: "mdi-eye", color: 'primary' },
+        // { name: "Delete" , icon: "mdi-delete", color: 'red', url: 'sales' },
       ],
     }
 
@@ -55,11 +70,31 @@ export default {
       return this.$store.state.lists
     }
   },
+  methods: {
+    dateValidate() {
+      if(this.fromDate == null || this.toDate == null) alert('Dates can not be null.')
+      else {
+        if(this.fromDate > this.toDate) {
+          this.fromDate = null
+          alert('From date can not be greater than to date.')
+        }
+        else if(this.toDate < this.fromDate) {
+          this.toDate = null
+          alert('To date can not be smaller than from date.')
+        }
+        else this.getData()
+      }
+    },
+    getData() {
+      this.$store.dispatch({
+        type: 'findAll',
+        url: 'sales',
+        para: { fromDate: this.fromDate, toDate: this.toDate }
+      })
+    }
+  },
   created() {
-    this.$store.dispatch({
-      type: 'findAll',
-      url: 'sales'
-    })
+    this.getData()
   }
 }
 

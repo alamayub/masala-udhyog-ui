@@ -13,7 +13,7 @@
           <v-spacer />
           <v-btn color="primary" to="/stocks/add">
             <v-icon left size="20">mdi-plus</v-icon>
-            <span>add</span>
+            <span>create new</span>
           </v-btn>
         </v-card-actions>
         <DataTable :theader="header_finish" :tbody="stocks" :actions="[]" />

@@ -46,7 +46,7 @@
             </thead>
             <tbody>
             <tr v-for="(row, index) in rows" :key="index">
-              <td><v-autocomplete v-model="row.item" outlined hide-details dense :items="items" @change="isItemAlreadySelected(row,index)" /></td>
+              <td><v-autocomplete v-model="row.particular" outlined hide-details dense :items="items" @change="isItemAlreadySelected(row,index)" /></td>
               <td><v-text-field v-model="row.stock" type="number" class="text-right" dense outlined hide-details readonly /></td>
               <td><v-text-field v-model="row.rate" type="number" class="text-right" dense outlined hide-details @input="getAmount(row)" /></td>
               <td><v-text-field v-model="row.quantity" type="number" class="text-right" dense outlined hide-details @input="getAmount(row)" /></td>
@@ -118,9 +118,8 @@ export default {
     billType: 'PAN',
     taxTypes: ['Inclusive', 'Exclusive'],
     taxType: 'Exclusive',
-    // items: ['Pen', 'Pencil', 'Copy', 'Book', 'Painting Box'],
     rows: [
-      { item: '', stock: null, rate: null, quantity: null, unit: null, amount: null }
+      { particular: '', stock: null, rate: null, quantity: null, unit: null, amount: null, purchaseDate: new Date().toISOString().substr(0, 10) }
     ],
     total: null,
     discount: null,

@@ -18,7 +18,7 @@
           <v-text-field v-model="user.address" label="Address" hide-details outlined dense required />
         </v-col>
         <v-col cols='12' sm='6' md='4' lg='3'>
-          <v-text-field v-model="user.email" :rules="emailRules" label="E-mail" hide-details outlined dense required />
+          <v-text-field v-model="user.email" :rules="emailRules" label="E-mail*" hide-details outlined dense required />
         </v-col>
         <v-col cols='12' sm='6' md='4' lg='3'>
           <v-text-field v-model="user.phone" label="Mobile Number" type="number" hide-details outlined dense required />
@@ -75,7 +75,7 @@ export default {
       phone: null,
       panvat: null,
       type: 'Customer',
-      enable: true,
+      enable: 'Active',
       remarks: ''
     },
     emailRules: [
@@ -83,7 +83,7 @@ export default {
       v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
     ],
     types: [ 'Customer', 'Vendor', 'Both' ],
-    enabled: [ true, false ],
+    enabled: [ 'Active', 'Inactive' ],
   }),
 
   methods: {
@@ -100,15 +100,6 @@ export default {
           console.log('data added successfully.')
           this.reset()
         }).catch( e => console.log(e))
-        // if(confirm('Are you sure want to perform the action?')) {
-        //   this.overlay = true
-        //   await api.post('/vendorAndCustomer/save', this.user)
-        //   .then( res => {
-        //     if(res.data.message) alert(res.data.message)
-        //     this.reset()
-        //   }).catch( e => console.log(e))
-        //   this.overlay = false
-        // }
       }
     },
     reset () {

@@ -114,7 +114,7 @@ export default {
     taxInclusiveExclusive: ['Inclusive', 'Exclusive'],
     items: ['Pen', 'Copy', 'Pencil', 'Book'],
     rows: [
-      {item: '',purchaseRate: null, returnRate: null,quantity: null, amount: null}
+      { particular: '',purchaseRate: null, returnRate: null,quantity: null, amount: null, returnDate: new Date().toISOString().substr(0, 10)}
     ],
     total: null,
     discount: null,

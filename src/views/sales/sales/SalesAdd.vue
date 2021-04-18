@@ -12,7 +12,12 @@
         <v-select v-model="taxType" :items="taxTypes" label="Tax Inclusive/Exclusive" hide-details outlined dense></v-select>
       </v-col>
       <v-col cols="12" sm="3" md="2">
-        <DatePicker labelName="Bill Date"/>
+        <v-menu v-model="menu" transition="scale-transition" offset-y max-width="290px" min-width="auto">
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field hide-details v-model="date" label="From Date" color="primary" prepend-inner-icon="mdi-calendar" outlined dense readonly v-bind="attrs" v-on="on" />
+          </template>
+          <v-date-picker v-model="date" color="primary" :max="maxDate" scrollable />
+        </v-menu>
       </v-col>
       <v-col cols="12" sm="3" md="2">
         <v-text-field label="Bill No" value="2077-00041" readonly hide-details outlined dense />
@@ -98,12 +103,7 @@
 </template>
 
 <script>
-import DatePicker from "@/components/DatePicker";
-
 export default {
-  components: {
-    DatePicker
-  },
   data: () => ({
     customers: ['Medilanee Pvt. Ltd', 'Natural Pvt. Ltd', 'Clark Pvt.Ltd', 'Himalayan Nepal pvt. Ltd'],
     customer: null,
@@ -111,8 +111,11 @@ export default {
     billType: 'PAN',
     taxTypes: ['Inclusive', 'Exclusive'],
     taxType: 'Exclusive',
+    menu: false,
+    date: new Date().toISOString().substr(0, 10),
+    maxDate: new Date().toISOString().substr(0, 10),
     rows: [
-      { particular: '', stock: null, rate: null, quantity: null, amount: null }
+      { particular: '', stock: null, rate: null, quantity: null, amount: null, createdDate: new Date().toISOString().substr(0, 10) }
     ]
     ,
     total: null,
@@ -122,16 +125,16 @@ export default {
   }),
   methods:{
     cloneLastTr() {
-      this.rows.push({ item: '', stock: null, rate: null, quantity: null, amount: null })
+      this.rows.push({ particular: '', stock: null, rate: null, quantity: null, amount: null, createdDate: this.date })
     },
     removeCurrentRow(index) {
       this.rows.splice(index, 1)
       this.getAmount()
     },
     isItemAlreadySelected(row, index) {
-      let x = this.rows.some(a => a.item === row.item && index !== this.rows.indexOf(a))
+      let x = this.rows.some(a => a.particular === row.particular && index !== this.rows.indexOf(a))
       if(x === true) {
-        row.item = ''
+        row.particular = ''
         alert('This item is already selected. Please choose another item.')
       }
     },

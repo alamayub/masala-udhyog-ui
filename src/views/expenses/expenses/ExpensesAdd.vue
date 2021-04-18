@@ -93,7 +93,7 @@ export default {
   }),
   methods:{
     cloneLastTr() {
-      this.rows.push({ item: '', rate: null, quantity: null, amount: null })
+      this.rows.push({ particular: '', rate: null, quantity: null, amount: null, date: new Date().toISOString().substr(0, 10) })
     },
     removeCurrentRow(index) {
       this.rows.splice(index, 1)
