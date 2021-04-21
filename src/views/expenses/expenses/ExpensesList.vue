@@ -47,9 +47,9 @@ export default {
     header: [
       { text: 'S.No', value: 'sno', class: 'primary white--text' },
       { text: 'Name', value: 'particular', class: 'primary white--text' },
-      { text: 'Rate', value: 'rate', class: 'primary white--text' },
+      { text: 'Rate (Rs.)', value: 'rate', class: 'primary white--text' },
       { text: 'Quantity', value: 'quantity', class: 'primary white--text' },
-      { text: 'Amount', value: 'amount', class: 'primary white--text' },
+      { text: 'Amount (Rs.)', value: 'expensesAmount', sortable: false, class: 'primary white--text' },
       { text: 'Actions', value: 'actions', class: 'primary white--text' }
     ],
     actions: [

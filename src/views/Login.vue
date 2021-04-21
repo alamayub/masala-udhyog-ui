@@ -25,6 +25,7 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-snackbar color="error lighten-2" v-model="snackbar" :timeout="timeout">{{ text }}</v-snackbar>
   </v-container>
 </template>
 
@@ -45,7 +46,10 @@ export default {
       v => !!v || 'Password is required',
     ],
     password: '',
-    showPass: false
+    showPass: false,
+    snackbar: false,
+    text: null,
+    timeout: 3000,
   }),
   methods: {
     async loginUser(){
@@ -58,12 +62,18 @@ export default {
         }
         await axios.post('http://localhost:8080/api/login', { username: this.username, password: this.password }, { headers })
           .then(response => {
-              console.log("token::",jwtDecode(response.data.token));
-              console.log("token::",response.data);
+              console.log("token::", jwtDecode(response.data.token));
+              console.log("token::", response.data);
+              console.log('exp ', jwtDecode(response.data.token).exp)
+              localStorage.setItem("exp", jwtDecode(response.data.token).exp)
               localStorage.setItem("token", 'Bearer '+response.data.token)
               this.$router.push({ name: 'Dashboard' })
             }
-          ).catch( e => console.log(e))
+          ).catch( e => {
+            console.log(e)
+            this.snackbar = true
+            this.text = 'Bad credentials.'
+          })
         this.overlay = false
       }
     }

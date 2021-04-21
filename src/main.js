@@ -10,7 +10,7 @@ Vue.use(cors);
 import api from "./helper/api";
 Vue.config.productionTip = false;
 Vue.prototype.$http = api; 
-api.defaults.timeout = 10000;
+// api.defaults.timeout = 10000;
 api.interceptors.request.use(
   config => {
     const token = localStorage.getItem("token")
@@ -36,16 +36,12 @@ api.interceptors.response.use(
     if (error.response.status) {
       switch (error.response.status) {
         case 400:
-         
-         //do something
+          alert('Bad request');
           break;
         case 401:
           alert('Unauthorized');
           localStorage.removeItem('token')
-          router.replace({
-            path: "/login",
-            query: { redirect: router.currentRoute.fullPath }
-          });
+          router.replace({ path: "/login",  query: { redirect: router.currentRoute.fullPath } });
           break;
         case 403:
           alert('Access Forbidden.')
@@ -53,8 +49,17 @@ api.interceptors.response.use(
         case 404:
           router.replace({ path: "*" });
           break;
+        case 500: 
+          alert('Interal server error');
+          break; 
         case 502:
-          alert('Something went wrong.')
+          alert('Bad gateway')
+          break;
+        case 503:
+          alert('Service unavailable')
+          break;
+        case 504:
+          alert('Gateway timeout')
           break;
       }
       return Promise.reject(error.response);
@@ -63,21 +68,28 @@ api.interceptors.response.use(
 );
 
 router.beforeEach((to, from, next) => {
+  let exp = localStorage.getItem('exp')
+  let date = new Date().getTime()
+  console.log(exp)
+  console.log(date)
   let token = localStorage.getItem('token')
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!token) {
-      next({ name: 'Login' })
+  if(exp >= Math.floor(date / 1000)) next({ name: 'Login' }) 
+  else {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+      if (!token) {
+        next({ name: 'Login' })
+      } else {
+        next()
+      }
+    } else if (to.matched.some(record => record.meta.requiresVisitor)) {
+      if (token) {
+        next({ name: 'Dashboard' })
+      } else {
+        next()
+      }
     } else {
       next()
     }
-  } else if (to.matched.some(record => record.meta.requiresVisitor)) {
-    if (token) {
-      next({ name: 'Dashboard' })
-    } else {
-      next()
-    }
-  } else {
-    next()
   }
 })
 
@@ -88,3 +100,27 @@ new Vue({
   vuetify,
   render: h => h(App)
 }).$mount('#app')
+
+
+/*
+if(exp >= date) {
+    localStorage.removeItem('exp')
+    localStorage.removeItem('token')
+    next({ name: 'Login' })
+  } else {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+      if (!token) {
+        next({ name: 'Login' })
+      } else {
+        next()
+      }
+    } else if (to.matched.some(record => record.meta.requiresVisitor)) {
+      if (token) {
+        next({ name: 'Dashboard' })
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
+  }*/

@@ -24,13 +24,13 @@
 
     <template v-slot:append>
       <div class="pa-2">
-        <v-btn :block="!deviceType" :icon="deviceType" color='white primary--text'>
+        <v-btn :block="!deviceType" :icon="deviceType" color='red white--text' @click="logout">
           <v-icon size='20' :left="!deviceType">mdi-logout</v-icon>
           <span class="d-none d-sm-block">logout</span>
         </v-btn>
       </div>
     </template>
-
+    <v-snackbar v-model="snackbar" :timeout="timeout">{{ text }}</v-snackbar>
   </v-navigation-drawer>
 </template>
 
@@ -47,8 +47,20 @@ export default {
       { title: 'customers / vendors', icon: 'mdi-card-account-details', to: '/vendors-customers' },
       { title: 'raw material', icon: 'mdi-tag', to: '/raw-material' },
     ],
+    snackbar: false,
+    text: null,
+    timeout: 3000,
   }),
-
+  methods: {
+    logout() {
+      localStorage.removeItem("exp")
+      localStorage.removeItem("token")
+      console.log('logged out')
+      this.$router.push({ name: 'Login' })
+      this.snackbar = true
+      this.text = 'Logged out successfully.'
+    }
+  },
   computed: {
     drawer: {
       get () {

@@ -43,10 +43,14 @@
           <span class="caption font-weight-bold">{{ item.createdDate }}</span>
         </template>
         <template v-slot:item.salesAmount="{ item }">
-          <span class="caption font-weight-bold">{{ salesAmount(item) }}</span>
+          <span class="caption font-weight-bold">{{ item.rate * item.quantity }}</span>
         </template>
+        <template v-slot:item.expensesAmount="{ item }">
+          <span class="caption font-weight-bold">{{ item.rate * item.quantity }}</span>
+        </template>
+        
         <template v-slot:item.amount="{ item }">
-          <span class="caption font-weight-bold">{{ getAmount(item) }}</span>
+          <span class="caption font-weight-bold">{{ (item.finalRate * item.quantity) - item.discountAmount }}</span>
         </template>
         <template v-slot:item.discountAmount="{ item }">
           <span class="ml-1 caption font-weight-bold">{{ item.discountAmount }}</span>
@@ -57,20 +61,6 @@
         <v-pagination v-model="page" :length="pageCount"></v-pagination>
       </div>
     </v-card> 
-
-    <!-- <table style="width: 100%">
-      <tr>
-        <th id="sno">S.No</th>
-        <th id="name">Particular</th>
-        <th id="rate">Rate</th>
-        <th id="quantity">Quantity</th>
-        <th id="amount">Total</th>
-      </tr>
-      <tr>
-        <td>1.</td>
-        <td>{{  }}</td>
-      </tr>
-    </table> -->
   </div> 
 </template>
 
@@ -114,12 +104,6 @@ export default {
     },
     print(item) {
       console.log(item)
-    },
-    getAmount(item) {
-      return (item.finalRate * item.quantity) - item.discountAmount
-    },
-    salesAmount(item) {
-      return item.rate * item.quantity
     }
   },
   computed: {
@@ -129,4 +113,3 @@ export default {
   }
 }
 </script>
-
