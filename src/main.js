@@ -7,6 +7,20 @@ import vuetify from './plugins/vuetify';
 import cors from 'core-js'
 Vue.use(cors);
 
+import VueHtmlToPaper from 'vue-html-to-paper'
+const options = {
+  name: '_blank',
+  specs: [
+    'fullscreen=yes',
+    'titlebar=yes',
+    'scrollbars=yes'
+  ],
+  styles: [
+    '@/assets/styles/print.css'
+  ]
+}
+Vue.use(VueHtmlToPaper, options)
+
 import api from "./helper/api";
 Vue.config.productionTip = false;
 Vue.prototype.$http = api; 
@@ -73,7 +87,34 @@ router.beforeEach((to, from, next) => {
   console.log(exp)
   console.log(date)
   let token = localStorage.getItem('token')
-  if(exp >= Math.floor(date / 1000)) next({ name: 'Login' }) 
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!token) {
+      next({ name: 'Login' })
+    } else {
+      next()
+    }
+  } else if (to.matched.some(record => record.meta.requiresVisitor)) {
+    if (token) {
+      next({ name: 'Dashboard' })
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+})
+
+
+new Vue({
+  router,
+  store,
+  vuetify,
+  render: h => h(App)
+}).$mount('#app')
+
+
+/*
+if(exp >= Math.floor(date / 1000)) next({ name: 'Login' }) 
   else {
     if (to.matched.some(record => record.meta.requiresAuth)) {
       if (!token) {
@@ -91,36 +132,4 @@ router.beforeEach((to, from, next) => {
       next()
     }
   }
-})
-
-
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
-}).$mount('#app')
-
-
-/*
-if(exp >= date) {
-    localStorage.removeItem('exp')
-    localStorage.removeItem('token')
-    next({ name: 'Login' })
-  } else {
-    if (to.matched.some(record => record.meta.requiresAuth)) {
-      if (!token) {
-        next({ name: 'Login' })
-      } else {
-        next()
-      }
-    } else if (to.matched.some(record => record.meta.requiresVisitor)) {
-      if (token) {
-        next({ name: 'Dashboard' })
-      } else {
-        next()
-      }
-    } else {
-      next()
-    }
-  }*/
+*/

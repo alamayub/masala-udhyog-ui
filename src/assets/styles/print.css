@@ -1,1 +1,5 @@
-#print-table { width: 100% !important; }
+.print, * {
+  height: 100vh;
+  width: 100vw;
+  background-color: green;
+}

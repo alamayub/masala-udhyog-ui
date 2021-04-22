@@ -60,7 +60,9 @@
       <div class="text-center pt-1">
         <v-pagination v-model="page" :length="pageCount"></v-pagination>
       </div>
-    </v-card> 
+    </v-card>
+    <v-btn @click="print('print page')">print</v-btn>
+    <div class='print green' id='printMe'></div>
   </div> 
 </template>
 
@@ -104,6 +106,7 @@ export default {
     },
     print(item) {
       console.log(item)
+      this.$htmlToPaper('printMe');
     }
   },
   computed: {
@@ -113,3 +116,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.print {
+  height: 100vh;
+  width: 100vw;
+}
+</style>
