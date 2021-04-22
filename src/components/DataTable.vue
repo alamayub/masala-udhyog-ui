@@ -87,24 +87,26 @@
           <tr>
             <th style="text-align: start; width: 50px;">S. No</th>
             <th style="text-align: center;">Item Name</th>
-            <th style="width: 120px;">Rate(Rs.)</th>
-            <th style="width: 120px;">Quantity</th>
-            <th style="width: 120px;">Amount(Rs.)</th>
+            <th style="width: 100px;">Rate(Rs.)</th>
+            <th style="width: 100px;">Quantity</th>
+            <th style="width: 100px;">Discount</th>
+            <th style="width: 100px;">Amount(Rs.)</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="a in 20" :key="a">
-            <td style="text-align: start;">{{ a }}.</td>
-            <td style="text-align: center;">Jeera</td>
-            <td>20</td>
-            <td>10</td>
-            <td>{{ 20 *10 }}</td>
+          <tr>
+            <td style="text-align: start;">1.</td>
+            <td style="text-align: center;">{{ d.particular }}</td>
+            <td>{{ d.finalRate }}</td>
+            <td>{{ d.quantity }}</td>
+            <td>{{ d.discountAmount }}</td>
+            <td>{{ (d.finalRate * d.quantity) - d.discountAmount }}</td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="4">Total Amount</td>
-            <td>3500</td>
+            <td colspan="5">Total Amount</td>
+            <td>{{ (d.finalRate * d.quantity) - d.discountAmount }}</td>
           </tr>
         </tfoot>
       </table>
@@ -126,7 +128,7 @@ export default {
     pageCount: 0,
     itemsPerPage: 5,
     search: '',
-
+    d: {}
   }),
   methods: {
     getSNO(item) {
@@ -154,8 +156,9 @@ export default {
     },
     print(item) {
       console.log(item)
+      this.d = item
       const p1 = '.print { display: block; font-family: sans-serif; }'
-      const watermark = '.watermark { background-color: rgba(128, 128, 128, .25); opacity: 0.2; height: 100%; width: 100%; overflow: hidden; position: absolute; display: flex; grid-column-gap: 7px; flex-wrap: wrap; } '+
+      const watermark = '.watermark { background-color: rgba(128, 128, 128, .25); opacity: 0.2; height: 100vh; width: 100%; overflow: hidden; position: absolute; display: flex; grid-column-gap: 7px; flex-wrap: wrap; } '+
         '.watermark p { font-size: 12px; font-weight: 300; color: black; line-height: 1px; }'
       const logo = '.logo { padding: 20px 0; display: flex; justify-content: center; align-items: center;} .company { margin-left: 10px;} .company-name { font-size: 25px; margin-bottom: 5px; } '
       const head = '.head { padding: 15px 0; display: flex; justify-content: space-between; }'
