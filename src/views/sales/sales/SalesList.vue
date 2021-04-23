@@ -53,12 +53,11 @@ export default {
         { text: 'Rate (Rs.)', value: 'rate', class: 'primary white--text' },
         { text: 'Quantity', value: 'quantity', class: 'primary white--text' },
         { text: 'Amount(Rs.)', value: 'salesAmount', class: 'primary white--text'},
-        // { text: 'Discount(Rs)', value: 'discount', class: 'primary white--text' } ,
-        // { text: 'Total(Rs)',  value: 'grandTotal', class: 'primary white--text' },
         { text: 'Actions', value: 'actions', sortable: false, class: 'primary white--text' },
       ],
       actions: [
         { name: "View" , icon: "mdi-eye", color: 'primary' },
+        { name: 'Print', icon: 'mdi-printer', color: 'secondary'}
         // { name: "Delete" , icon: "mdi-delete", color: 'red', url: 'sales' },
       ],
     }

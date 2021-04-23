@@ -61,8 +61,7 @@
         <v-pagination v-model="page" :length="pageCount"></v-pagination>
       </div>
     </v-card>
-    <v-btn @click="print('print page')">print</v-btn>
-    <div class='print d-none' id='printMe'>
+    <div class='print d-none' id='printMe' v-if="item.length > 0">
       <div class="watermark">
         <p v-for="p in 600" :key="p">agram lab</p>
       </div>
@@ -74,13 +73,13 @@
         </div>
       </div>
       <div class="head">
-        <div class="caption">Bill No. : #<strong>354465</strong></div>
-        <div class="caption">Date. : <strong>21/04/2021</strong></div>
+        <div class="caption">Bill No. : #<strong>{{ item[0].billNumber }}</strong></div>
+        <div class="caption">Date. : <strong>{{ item[0].createdDate.slice(0, 10) }}</strong></div>
       </div>
       <div class="head">
-        <div class="caption">Code : <strong>C-001</strong></div>
-        <div class="caption">Name : <strong>Alex Martin</strong></div>
-        <div class="caption">Contact : <strong>9876543210</strong></div>
+        <!-- <div class="caption">Code : <strong>C-001</strong></div> -->
+        <div class="caption">Name : <strong>{{ item[0].customerName }}</strong></div>
+        <!-- <div class="caption">Contact : <strong>9876543210</strong></div> -->
       </div>
       <table>
         <thead>
@@ -89,24 +88,22 @@
             <th style="text-align: center;">Item Name</th>
             <th style="width: 100px;">Rate(Rs.)</th>
             <th style="width: 100px;">Quantity</th>
-            <th style="width: 100px;">Discount</th>
             <th style="width: 100px;">Amount(Rs.)</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td style="text-align: start;">1.</td>
-            <td style="text-align: center;">{{ d.particular }}</td>
-            <td>{{ d.finalRate }}</td>
+          <tr v-for="(d, i) in item" :key="i">
+            <td style="text-align: start;">{{ i + 1 }}</td>
+            <td style="text-align: center;" class="text-capitalize">{{ d.particular }}</td>
+            <td>{{ d.rate }}</td>
             <td>{{ d.quantity }}</td>
-            <td>{{ d.discountAmount }}</td>
-            <td>{{ (d.finalRate * d.quantity) - d.discountAmount }}</td>
+            <td>{{ d.rate * d.quantity }}</td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="5">Total Amount</td>
-            <td>{{ (d.finalRate * d.quantity) - d.discountAmount }}</td>
+            <td colspan="4">Total Amount</td>
+            <td>{{ total }}</td>
           </tr>
         </tfoot>
       </table>
@@ -128,7 +125,8 @@ export default {
     pageCount: 0,
     itemsPerPage: 5,
     search: '',
-    d: {}
+    item: [],
+    total: null
   }),
   methods: {
     getSNO(item) {
@@ -154,28 +152,37 @@ export default {
         this.$store.commit('SET_OVERLAY', false)
       }
     },
-    print(item) {
+    async print(item) {
+      this.$store.commit('SET_OVERLAY', true)
       console.log(item)
-      this.d = item
-      const p1 = '.print { display: block; font-family: sans-serif; }'
-      const watermark = '.watermark { background-color: rgba(128, 128, 128, .25); opacity: 0.2; height: 100vh; width: 100%; overflow: hidden; position: absolute; display: flex; grid-column-gap: 7px; flex-wrap: wrap; } '+
-        '.watermark p { font-size: 12px; font-weight: 300; color: black; line-height: 1px; }'
-      const logo = '.logo { padding: 20px 0; display: flex; justify-content: center; align-items: center;} .company { margin-left: 10px;} .company-name { font-size: 25px; margin-bottom: 5px; } '
-      const head = '.head { padding: 15px 0; display: flex; justify-content: space-between; }'
-      const table = 'table { width: 100%; border-collapse: collapse; border: 1px solid black; } thead tr { border-bottom: 1px solid black; }' + 
-        'tr { text-align: end; } th, td { border-right: 1px solid black; border-left: 1px solid black; }'+ 
-        'tfoot { font-weight: bold; } tfoot tr { border-top: 1px solid black; }'
-      const td = 'table td, table th { padding: 7px 15px; }'
-      const style = `${p1} ${watermark} ${logo} ${head} ${table} ${td}`
-      print({
-        printable: "printMe",
-        type: "html",
-        style: style,
-        scanStyles: false,
-        documentTitle: 'document title',
-        onPrintDialogClose: () => console.log("The print dialog was closed"),
-        onError: e => console.log(e)
-      });
+      await api.get(`sales/findAllBy/billNumber?billNumber=${item.billNumber}`)
+      .then( res => {
+        console.log(res)
+        this.item = res.data.body
+        res.data.body.forEach( a => {
+          this.total = this.total + ( a.rate * a.quantity )
+        });
+        const p1 = '.print { display: block; font-family: sans-serif; }'
+        const watermark = '.watermark { background-color: rgba(128, 128, 128, .25); opacity: 0.2; height: 100vh; width: 100%; overflow: hidden; position: absolute; display: flex; grid-column-gap: 7px; flex-wrap: wrap; } '+
+          '.watermark p { font-size: 12px; font-weight: 300; color: black; line-height: 1px; }'
+        const logo = '.logo { padding: 20px 0; display: flex; justify-content: center; align-items: center;} .company { margin-left: 10px;} .company-name { font-size: 25px; margin-bottom: 5px; } '
+        const head = '.head { padding: 15px 0; display: flex; justify-content: space-between; }'
+        const table = 'table { width: 100%; border-collapse: collapse; border: 1px solid black; } thead tr { border-bottom: 1px solid black; }' + 
+          'tr { text-align: end; } th, td { border-right: 1px solid black; border-left: 1px solid black; }'+ 
+          'tfoot { font-weight: bold; } tfoot tr { border-top: 1px solid black; }'
+        const td = 'table td, table th { padding: 7px 15px; }'
+        const style = `${p1} ${watermark} ${logo} ${head} ${table} ${td}`
+        print({
+          printable: "printMe",
+          type: "html",
+          style: style,
+          scanStyles: false,
+          documentTitle: 'document title',
+          onPrintDialogClose: () => console.log("The print dialog was closed"),
+          onError: e => console.log(e)
+        });
+      }).catch( e => console.log(e))
+      this.$store.commit('SET_OVERLAY', false)
     }
   },
   computed: {
